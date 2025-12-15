@@ -1,417 +1,501 @@
-= Candy Crash - UK Driving Theory Preparation Platform
-
-image:https://img.shields.io/badge/RSR-Gold-FFD700?style=flat-square[RSR Compliance,link=./RSR_COMPLIANCE.adoc]
-image:https://img.shields.io/badge/Rails-7.1.3-red?style=flat-square&logo=ruby-on-rails[Rails,link=https://rubyonrails.org/]
-image:https://img.shields.io/badge/Ruby-3.3.6-red?style=flat-square&logo=ruby[Ruby,link=https://www.ruby-lang.org/]
-image:https://img.shields.io/badge/License-See_LICENSE-blue?style=flat-square[License,link=./LICENSE]
-
-A comprehensive Learning Management System (LMS) for UK driving licence preparation, built with Ruby on Rails 7 and based on the PRIMROSE protocol.
-
-== 🏆 RSR Compliance: Gold Tier (94%)
-
-This project adheres to the *Rhodium Standard Repository (RSR)* framework at *Gold Tier*:
-
-* ✅ Complete documentation (17 required files)
-* ✅ RFC 9116 compliant `.well-known/security.txt`
-* ✅ SPDX headers in all source files
-* ✅ Comprehensive security headers (CSP, HSTS, COOP, etc.)
-* ✅ Nix flakes for reproducible builds
-* ✅ Podman rootless containers (Chainguard Wolfi)
-* ✅ Automated testing & CI/CD (GitHub Actions)
-* ✅ Security scanning (Brakeman, Bundler Audit, CodeQL)
-* ✅ TPCF Governance (Tri-Perimeter Contribution Framework)
-* ✅ 60+ Just automation recipes
-* ✅ Git hooks with quality gates
-
-*Current Status*: 🥇 Gold (94% compliance) → See link:./RSR_COMPLIANCE.adoc[RSR_COMPLIANCE.adoc] for details
-
-== Features
-
-=== Core Functionality
-
-* ✅ *User Authentication* - Devise-powered authentication with 3 user roles (Student, Instructor, Admin)
-* ✅ *Course Management* - Complete course catalog with categories, modules, and lessons
-* ✅ *Quiz Engine* - Interactive quizzes with multiple-choice questions, scoring, and attempts tracking
-* ✅ *Progress Tracking* - Student progress monitoring for lessons and courses
-* ✅ *Achievement System* - Gamification with badges and points
-* ✅ *Enrollment System* - Course enrollment and access control
-* ✅ *Role-Based Dashboards* - Separate dashboards for students, instructors, and admins
-
-=== Technical Highlights
-
-* *Rails 7.1.3* with modern best practices
-* *CSS-first design* with custom styles (410+ lines)
-* *Bootstrap 5* responsive UI (foundational framework)
-* *Devise* for authentication
-* *Pundit* for authorization
-* *Kaminari* for pagination
-* *Ransack* for search and filtering
-* *RSpec* test framework with SimpleCov (80% coverage minimum)
-* *Active Storage* for file uploads
-* *Factory Bot* for test data
-* *Faker* for seed data generation
-* *Just* task runner (60+ recipes)
-* *Podman* rootless containers (Chainguard Wolfi)
-* *Nix flakes* for reproducible builds
-
-== Database Schema
-
-=== Core Models
-
-* *User* - Authentication with roles (student/instructor/admin)
-* *Profile* - User profile information
-* *Category* - Course categorization
-* *Course* - Main course entity with pricing and metadata
-* *CourseModule* - Course sections/modules
-* *Lesson* - Individual lessons with content and video support
-* *Question* - Quiz questions with multiple types
-* *QuestionOption* - Answer options for questions
-* *Quiz* - Quizzes with timing and passing score
-* *QuizAttempt* - Student quiz attempts with scoring
-* *QuizAnswer* - Individual question answers
-* *Enrollment* - Course enrollment tracking
-* *LessonProgress* - Lesson completion tracking
-* *Achievement* - Achievement definitions
-* *UserAchievement* - Earned achievements
-
-== Installation
-
-=== Prerequisites
-
-* *Ruby 3.3.6* (runtime)
-* *Just* (task runner) - link:https://github.com/casey/just#installation[Installation guide]
-* *Podman* (container engine) - link:https://podman.io/getting-started/installation[Installation guide]
-* *Git* (version control)
-* *Bundler* (Ruby gem manager)
-
-=== Quick Setup
-
-[source,bash]
-----
-# Clone the repository
-git clone https://github.com/Hyperpolymath/candy-crash.git
-cd candy-crash
-
-# Run bootstrap script (checks dependencies, installs hooks)
-./bootstrap.sh
-
-# OR manual setup:
-bundle install           # Install Ruby dependencies
-just db-setup           # Create and seed database
-just serve              # Start development server
-----
-
-Visit `http://localhost:3000`
-
-=== Using Just (Task Runner)
-
-[source,bash]
-----
-just --list              # Show all available commands
-just serve               # Start Rails server
-just test                # Run test suite
-just lint                # Run RuboCop
-just db-reset            # Reset database
-just validate-rsr        # Check RSR compliance
-----
-
-See link:./justfile[justfile] for 60+ automation recipes.
-
-== Seed Data & Demo Accounts
-
-The application comes with comprehensive seed data including:
-
-* 3 categories
-* 1 complete course with lessons
-* 10 driving theory questions
-* Practice quiz
-* 3 achievements
-* Multiple user accounts for testing
-
-=== Login Credentials
-
-*Admin Account:*
-
-* Email: `admin@candycrash.com`
-* Password: `password123`
-
-*Instructor Account:*
-
-* Email: `john.smith@candycrash.com`
-* Password: `password123`
-
-*Student Account:*
-
-* Email: `student1@example.com`
-* Password: `password123`
-
-== Project Structure
-
-----
-candy-crash/
-├── app/
-│   ├── controllers/      # Application controllers
-│   │   ├── pages_controller.rb
-│   │   ├── courses_controller.rb
-│   │   ├── lessons_controller.rb
-│   │   ├── quizzes_controller.rb
-│   │   ├── quiz_attempts_controller.rb
-│   │   └── dashboards_controller.rb
-│   ├── models/           # ActiveRecord models
-│   │   ├── user.rb
-│   │   ├── course.rb
-│   │   ├── lesson.rb
-│   │   ├── question.rb
-│   │   ├── quiz.rb
-│   │   └── ... (16 models total)
-│   ├── views/            # ERB templates
-│   ├── policies/         # Pundit authorization policies
-│   └── helpers/          # View helpers
-├── config/
-│   ├── routes.rb         # Application routes
-│   └── ...
-├── db/
-│   ├── migrate/          # Database migrations
-│   ├── seeds.rb          # Seed data
-│   └── schema.rb         # Database schema
-└── spec/                 # RSpec tests
-----
+= Candy Crash
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
 
-== Key Features Explained
+**Total Pervasive Ambient Computing for Vehicle Operator Training**
 
-=== User Roles
+toc::[]
 
-*Student:*
+== What This Is
 
-* Browse and enroll in courses
-* View lessons and complete them
-* Take quizzes and track attempts
-* View personal dashboard with progress
-* Earn achievements
+Candy Crash is a framework for training humans to operate vehicles—cars, motorbikes, aircraft, watercraft—through *pervasive ambient computing*.
 
-*Instructor:*
+This is not an LMS. This is not e-learning. This is not a course.
 
-* View instructor dashboard
-* See enrolled students
-* Access to instructor namespace (ready for course creation)
+This is an *environmental intervention* that makes the boundaries between "training" and "living" dissolve.
 
-*Admin:*
+== The Philosophical Foundation
 
-* Full platform access
-* User management
-* Course management
-* Platform analytics
+=== The Problem with Traditional Training
 
-=== Course Flow
+Traditional vehicle operator training commits a fundamental error: it treats operation as a *skill to be acquired* rather than a *way of being to be inhabited*.
 
-. Student browses course catalog
-. Student enrolls in a course
-. Student accesses course modules and lessons
-. Student completes lessons (progress tracked)
-. Student takes quizzes to test knowledge
-. System scores quizzes automatically
-. Student earns achievements for milestones
+You sit in a classroom. You read theory. You take a test. Then, separately, you sit in a vehicle and practice. The assumption: knowledge transfers cleanly from abstraction to embodiment.
 
-=== Quiz System
+This is wrong.
 
-* Multiple choice questions
-* Configurable time limits
-* Maximum attempts per quiz
-* Automatic scoring
-* Pass/fail threshold
-* Detailed results and feedback
+=== Embodied Cognition and Situated Learning
 
-== Development
+Cognition does not happen in the head. It happens in the dynamic coupling between organism and environment. When you drive, you do not "apply knowledge"—you *perceive-act* in a continuous loop with the vehicle and the road.
 
-=== Running Tests
+The steering wheel is not a tool you use. It becomes part of your body schema. The car's boundaries become your boundaries. You do not think "turn the wheel 15 degrees"; you *flow through the curve*.
 
-[source,bash]
-----
-# Run all tests
-just test
+This cannot be taught through abstraction. It must be *grown* through sustained environmental coupling.
 
-# Run with coverage
-just test-coverage
+=== The Ambient Computing Thesis
 
-# Run specific test file
-just test-file spec/models/user_spec.rb
-----
+Mark Weiser wrote: "The most profound technologies are those that disappear. They weave themselves into the fabric of everyday life until they are indistinguishable from it."
 
-=== Code Quality
+We apply this to training: *The most profound training is that which disappears. It weaves itself into the fabric of everyday life until learning and living are indistinguishable.*
 
-[source,bash]
-----
-# Run RuboCop linter
-just lint
+The trainee does not "study driving." The trainee *lives in an environment that continuously cultivates vehicular perception-action competence*.
 
-# Auto-fix RuboCop issues
-just lint-fix
+== What Total Pervasive Ambient Training Means
 
-# Run security scanner
-just security
+=== Dissolution of the Training Boundary
 
-# Check for vulnerable dependencies
-just audit
+There is no "lesson time" and "non-lesson time." Every moment is potentially a training moment:
 
-# Run all quality checks
-just quality
-----
+* Walking down a street → the trainee perceives traffic patterns, timing, gaps
+* Riding as a passenger → the trainee feels acceleration, braking, cornering forces
+* Sleeping → consolidation of procedural memory continues
+* Cooking → proprioceptive calibration continues in the background
+* Sitting idle → micro-simulations present themselves
 
-=== Git Hooks (Hybrid System)
+The training is *always on*, but it is not intrusive. It is *ambient*—present in the environment, available when attention is available, receding when it is not.
 
-The project uses a *hybrid Just-based hook system*:
+=== Multi-Modal Environmental Saturation
 
-* Thin bash wrappers (68 lines) delegate to Just recipes
-* All check logic in justfile (168 lines)
-* Graceful degradation if Just not installed
+Ambient training operates across all sensory channels and all contexts:
 
-*Automatic hooks* (run on git commit/push):
+**Haptic Layer**::
+Wearable devices that provide subtle force-feedback. Feel steering resistance while walking. Feel braking pressure while sitting. The hands and feet develop procedural memory continuously.
 
-[source,bash]
-----
-./.githooks/install.sh   # Install hooks once
-----
+**Audio Layer**::
+Spatial audio that trains situational awareness. Engine sounds. Tire sounds. Traffic patterns. Not as "lessons" but as environmental texture—present, informative, unobtrusive.
 
-*Manual checks* (test without committing):
+**Visual Layer**::
+Augmented reality that overlays driving-relevant perception onto everyday scenes. Traffic flow visualization. Gap timing. Hazard prediction zones. Not replacing reality but *annotating* it.
 
-[source,bash]
-----
-just pre-commit-checks   # SPDX, linting, debugging, YAML, secrets
-just pre-push-checks     # Tests, security, dependencies, migrations
-----
+**Proprioceptive Layer**::
+Body-position awareness training. Vehicle operators must know where their body is in space. Ambient systems that occasionally prompt body-awareness micro-exercises.
 
-=== Database Operations
+**Temporal Layer**::
+Learning must respect biological rhythms. Systems that detect alertness, receptivity, consolidation states. Training intensifies when the brain is receptive. Training recedes when the brain needs rest or consolidation.
 
-[source,bash]
-----
-# Create a migration
-just generate migration MigrationName
+=== The Vehicle as Extended Phenotype
 
-# Run migrations
-just db-migrate
+The goal is not "learning to drive." The goal is *becoming a vehicle operator*—a human whose cognitive boundaries have extended to include the machine.
 
-# Rollback last migration
-just db-rollback
+This requires:
 
-# Reset database
-just db-reset
+1. **Perceptual Recalibration**: The trainee must perceive the vehicle's dimensions as their own dimensions
+2. **Procedural Embodiment**: Control inputs must become as automatic as walking
+3. **Predictive Integration**: The trainee must feel what the vehicle will do before it does it
+4. **Environmental Coupling**: The trainee must perceive the road-vehicle system as a unified dynamic field
 
-# Show migration status
-just db-status
-----
+None of this can be "taught." It must be *grown* through extended environmental exposure.
 
-=== Container Operations (Podman)
+== Human Factors Constraints
 
-[source,bash]
-----
-# Build container
-just podman-build
+Ambient training sounds appealing in theory. But human factors research imposes hard constraints that this system must respect. Ignoring these constraints produces systems that feel clever but fail to produce competent operators.
 
-# Run container
-just podman-run
+=== Attention Is Finite
 
-# Interactive shell
-just podman-shell
+The vision of "training that happens everywhere" collides with a fundamental reality: *attention is a limited resource*.
 
-# Clean up
-just podman-clean
-----
+**Cognitive Load Theory** (Sweller)::
+Working memory has strict capacity limits. Every intervention—however "ambient"—consumes cognitive resources. Training while walking means degraded walking AND degraded training. The system cannot pretend otherwise.
 
-== PRIMROSE Protocol
+**Dual-Task Interference**::
+Humans cannot truly multitask on attention-demanding activities. We task-switch, and task-switching has costs. "Ambient" training during other activities is actually interleaved training with switching overhead.
 
-This application is based on the PRIMROSE protocol for driving licence preparation. The protocol emphasizes:
+**Interruption Costs**::
+Research on interruptions (Mark, González) shows recovery times of 20+ minutes for complex cognitive tasks. Even subtle interventions have costs. The system must be parsimonious with interruptions.
 
-* Structured learning paths
-* Progressive difficulty
-* Regular assessment
-* Practical application
-* Achievement-based motivation
+*Design Implication*: The system must model attention as a scarce resource. Interventions have a cost. The planner must weigh training benefit against attention cost and err toward restraint.
 
-== Routes Overview
+=== Vigilance Degrades
 
-=== Public Routes
+An "always on" system risks producing habituation rather than learning.
 
-* `GET /` - Home page
-* `GET /courses` - Course catalog
-* `GET /courses/:id` - Course details
-* `GET /about` - About page
+**Vigilance Decrement**::
+Sustained attention to monotonous stimuli degrades over time—often within 20-30 minutes. A system that provides constant low-level training signals will be tuned out.
 
-=== Student Routes (Authentication Required)
+**Alarm Fatigue**::
+Systems that alert too frequently produce operators who ignore alerts. This is well-documented in medical, aviation, and industrial contexts. The training system must not become noise.
 
-* `GET /dashboard` - Student dashboard
-* `POST /courses/:id/enroll` - Enroll in course
-* `GET /courses/:course_id/lessons/:id` - View lesson
-* `POST /courses/:course_id/lessons/:id/complete` - Complete lesson
-* `GET /courses/:course_id/quizzes/:id` - Quiz overview
-* `POST /courses/:course_id/quizzes/:quiz_id/quiz_attempts` - Start quiz
-* `GET /courses/:course_id/quizzes/:quiz_id/quiz_attempts/:id` - Take quiz
+**Habituation**::
+Repeated exposure to stimuli without consequence produces habituation—the stimulus stops being perceived. Ambient training signals will fade into the background unless carefully managed.
 
-=== Instructor Routes
+*Design Implication*: The system must vary its interventions, respect refractory periods, and accept that less is often more. Silence is a valid output.
 
-* `GET /instructor/dashboard` - Instructor dashboard
-* `/instructor/courses/*` - Course management (namespaced)
+=== Transfer Is Not Guaranteed
 
-=== Admin Routes
+The plan assumes training outside the vehicle transfers to performance inside the vehicle. This assumption requires scrutiny.
 
-* `GET /admin/dashboard` - Admin dashboard
-* `/admin/*` - Platform management (namespaced)
+**Specificity of Learning**::
+Motor learning is highly context-specific. Skills trained in one context do not automatically transfer to another. Haptic feedback while walking is a different sensorimotor context than haptic feedback while steering.
 
-== Technology Decisions
+**Body Schema Extension**::
+The "extended phenotype" of vehicle operation develops through coupling with *the actual vehicle*. Simulated or abstracted training may not produce the same body schema integration.
 
-=== Why These Gems?
+**The Transfer Problem**::
+Educational research consistently shows that transfer is difficult to achieve. Training in one domain often fails to improve performance in related domains. We cannot assume ambient training transfers to vehicle operation without empirical validation.
 
-* *Devise*: Industry standard for authentication
-* *Pundit*: Policy-based authorization, easy to test
-* *Kaminari*: Clean pagination with I18n support
-* *Ransack*: Powerful search with minimal configuration
-* *RSpec*: Better syntax than Minitest for complex tests
-* *Factory Bot*: Flexible test data factories
-* *Faker*: Realistic seed data generation
-* *Simple Form*: DRY form builder with Bootstrap integration
+*Design Implication*: The system must be honest about what ambient training can and cannot achieve. Some competencies require actual vehicle time. The system should identify which micro-skills have plausible ambient trainability and which do not.
 
-== Future Enhancements
+=== Situation Awareness Has Levels
 
-* [ ] Instructor course creation interface
-* [ ] Admin panel for platform management
-* [ ] Advanced analytics and reporting
-* [ ] Email notifications
-* [ ] Video lesson playback tracking
-* [ ] Discussion forums
-* [ ] Mobile app via API
-* [ ] Payment integration for course purchases
-* [ ] Certificate generation
-* [ ] Social features (leaderboards, study groups)
+Operator competence is not just perception-action loops. Endsley's model identifies three levels:
+
+**Level 1 - Perception**::
+Perceiving relevant elements in the environment. Where are other vehicles? What is my speed? This is trainable through perceptual learning.
+
+**Level 2 - Comprehension**::
+Understanding what the perceived elements mean. That vehicle is approaching fast—it won't stop in time. This requires mental models that integrate perception with knowledge.
+
+**Level 3 - Projection**::
+Anticipating future states. In three seconds, that vehicle will be in my path. This requires dynamic mental simulation.
+
+Experts differ from novices primarily in Levels 2 and 3, not Level 1. Ambient training can address perceptual learning (Level 1) but must also develop comprehension and projection capabilities.
+
+*Design Implication*: The competence model must address all three SA levels. Interventions must include comprehension and projection training, not just perceptual exposure.
+
+=== Honest Constraints
+
+Given these human factors realities, the system must:
+
+1. **Model attention explicitly**: Track cognitive load, respect limits, err toward fewer interventions
+2. **Vary and space interventions**: Avoid habituation through variation and appropriate spacing
+3. **Validate transfer empirically**: Do not assume ambient training produces vehicle competence without evidence
+4. **Train comprehension and projection**: Not just perception—understanding and anticipation
+5. **Accept limitations**: Some training requires actual vehicle time. The system is a supplement, not a replacement.
+
+== Operational Paradigms
+
+Vehicle operation exists on a spectrum from full human control to full machine control. This framework must address all three paradigms, though current development focuses on manual operation.
+
+=== The Three Paradigms
+
+**Manual Operation**::
+The human is the primary controller. The vehicle provides feedback but does not intervene in control. This is the historical norm and remains dominant for motorcycles, light aircraft, most watercraft, and many road vehicles.
+
+**Hybrid Operation** (SAE Levels 1-3)::
+Human and machine share control. The machine may handle some functions (lane-keeping, adaptive cruise) while the human handles others. The human must monitor automation and intervene when needed. This is the current transitional state for many road vehicles.
+
+**Autonomous Operation** (SAE Levels 4-5)::
+The machine is the primary controller. The human is a passenger, supervisor, or fallback. This is emerging for some road vehicles in limited domains and is common for certain aviation operations (autopilot cruise).
+
+=== Why All Three Matter
+
+Each paradigm requires different competencies:
+
+[cols="1,1,1,1"]
+|===
+|Competency |Manual |Hybrid |Autonomous
+
+|Vehicle control skills
+|Primary
+|Maintained for takeover
+|Emergency only
+
+|Perceptual skills
+|Primary
+|Monitoring automation + environment
+|Optional awareness
+
+|Comprehension/projection
+|Primary
+|Understanding automation state
+|Understanding automation boundaries
+
+|Procedural memory
+|Primary
+|Takeover procedures
+|Emergency procedures
+
+|Trust calibration
+|N/A
+|Critical—when to intervene
+|Critical—when automation fails
+
+|Mode awareness
+|Minimal
+|Critical—what is automation doing?
+|Important—what can automation handle?
+|===
+
+=== Current Focus: Manual Operation
+
+This project currently focuses on **manual operation** and **current production systems**.
+
+Rationale:
+
+1. **Foundation**: Manual operation competencies are foundational. Even in automated futures, base skills matter for edge cases, failures, and takeover situations.
+
+2. **Current Reality**: Most vehicle operation today is still primarily manual. Motorcycles, light aircraft, recreational watercraft, and the majority of global road vehicles have minimal automation.
+
+3. **Validation Clarity**: Manual operation has clear competence criteria (licensing tests, incident rates). This enables cleaner validation of training effectiveness.
+
+4. **Ethical Clarity**: Training humans to operate vehicles manually is straightforwardly beneficial. Hybrid/autonomous paradigms raise more complex questions about human-machine responsibility.
+
+=== Future Exploration: Hybrid and Autonomous
+
+The framework will expand to address hybrid and autonomous operation:
+
+**Hybrid Paradigm** (Future)::
+* Monitoring skill training—sustained attention to automation state
+* Takeover readiness—rapid transition from monitoring to controlling
+* Mode awareness training—understanding automation states and transitions
+* Trust calibration—knowing when to trust and when to intervene
+* Automation boundary understanding—where does automation fail?
+
+**Autonomous Paradigm** (Future)::
+* Supervision skills for high-automation environments
+* Emergency intervention capabilities
+* System limitation awareness
+* Graceful degradation understanding
+
+These are documented in `docs/paradigms/` as the framework matures.
+
+=== Paradigm-Agnostic Architecture
+
+The core architecture (sensors, actuators, competence modeling, intervention planning) is paradigm-agnostic. What changes across paradigms:
+
+* The competence models (different skills for different paradigms)
+* The intervention libraries (different training content)
+* The assessment methodologies (different criteria for competence)
+
+The infrastructure serves all three paradigms.
+
+== Architecture Principles
+
+=== Sensor Mesh
+
+The system requires a mesh of sensors across the trainee's environment:
+
+* Wearables (hands, feet, torso)
+* Environmental sensors (home, transit, workplace)
+* Vehicle integration (when operating or riding)
+* Biometric monitoring (alertness, stress, receptivity)
+
+These sensors do not merely collect data. They *create an extended nervous system* that allows the training system to perceive the trainee's state and context.
+
+=== Actuator Mesh
+
+The system requires actuators that can modulate the trainee's environment:
+
+* Haptic feedback devices
+* Spatial audio systems
+* AR displays / smart glasses
+* Environmental lighting and sound
+* Vehicle integration systems
+
+These actuators do not merely "present lessons." They *modulate the environment* to create learning-optimal conditions.
+
+=== The Training Intelligence
+
+At the center: an intelligence that:
+
+* Perceives the trainee's current state (biometric, contextual, historical)
+* Models the trainee's current competence landscape
+* Identifies optimal micro-interventions
+* Delivers those interventions through the actuator mesh
+* Observes results and updates the competence model
+
+This is not "adaptive learning" in the LMS sense. This is *continuous environmental modulation* in service of competence development.
+
+=== Privacy and Sovereignty
+
+Total ambient computing raises profound privacy questions. The trainee must remain *sovereign*:
+
+* All data remains under trainee control
+* Training can be paused, modified, or terminated at will
+* No data leaves the trainee's personal compute environment without explicit consent
+* The system serves the trainee; the trainee does not serve the system
+
+== Vehicle Domains
+
+The framework is domain-agnostic but implementation is domain-specific:
+
+=== Ground Vehicles (Cars, Trucks)
+
+Focus areas:
+* Traffic flow perception
+* Gap judgment
+* Speed-distance calibration
+* Mirror-signal-maneuver proceduralization
+* Hazard prediction
+* Low-grip handling intuition
+
+=== Two-Wheeled Vehicles (Motorbikes, Bicycles)
+
+Focus areas:
+* Balance and countersteering intuition
+* Lean angle perception
+* Road surface reading
+* Visibility and conspicuity awareness
+* Target fixation prevention
+* Emergency braking procedure
+
+=== Aircraft
+
+Focus areas:
+* Three-dimensional spatial orientation
+* Instrument scan patterns
+* Procedure memorization and chunking
+* Decision-making under uncertainty
+* Physiological state management
+* Multi-crew coordination patterns
+
+=== Watercraft
+
+Focus areas:
+* Momentum and inertia intuition
+* Weather and water reading
+* Navigation pattern development
+* Emergency procedure embodiment
+* Communication protocol proceduralization
+
+== What Must Be Built
+
+=== Phase 0: Conceptual Foundation
+
+Before any code is written:
+
+* Define the competence model for each vehicle domain
+* Map the perception-action loops that constitute skilled operation
+* Identify the micro-skills that can be trained ambiently
+* Design the sensor/actuator requirements
+* Establish privacy architecture
+* Create the ethical framework
+
+=== Phase 1: Core Intelligence
+
+* Trainee state perception system
+* Competence modeling framework
+* Intervention planning engine
+* Outcome observation system
+* Model update loop
+
+=== Phase 2: Sensor Integration
+
+* Wearable device protocols
+* Environmental sensor protocols
+* Vehicle integration protocols
+* Biometric monitoring integration
+* Context inference engine
+
+=== Phase 3: Actuator Integration
+
+* Haptic feedback protocols
+* Spatial audio rendering
+* AR overlay system
+* Environmental modulation protocols
+* Vehicle integration for active training
+
+=== Phase 4: Domain-Specific Training Modules
+
+For each vehicle domain:
+* Competence decomposition
+* Micro-intervention library
+* Assessment methodology
+* Progression modeling
+
+=== Phase 5: Validation
+
+* Effectiveness studies
+* Safety validation
+* Long-term outcome tracking
+* Ethical review
+
+== Current State
+
+The repository currently contains remnants of an earlier approach—a conventional LMS for driving theory. This approach was fundamentally misguided.
+
+The existing Rails application, database schema, and quiz engine represent the *wrong paradigm*. They assume training is "content delivery" rather than "environmental cultivation."
+
+This must be rebuilt from first principles.
+
+See link:./ROADMAP.adoc[ROADMAP.adoc] for the practical path forward, including blockers and key decisions.
+
+== Technology Direction
+
+Given the RSR compliance requirements and the nature of the system:
+
+**Core Runtime**: Rust
+* Systems-level performance for real-time sensor/actuator loops
+* Memory safety for safety-critical systems
+* Embedded deployment capability
+
+**User Interfaces**: ReScript
+* Type-safe web interfaces for configuration and monitoring
+* Compilation to efficient JavaScript
+* Functional paradigm matches the declarative nature of UI
+
+**Formal Verification**: SPARK/Ada
+* Safety-critical components require formal verification
+* Proof of absence of runtime errors
+* Required for aviation and medical-adjacent systems
+
+**ML/Inference**: Rust with WASM
+* Competence modeling and intervention planning
+* Must run on-device for privacy
+* WASM for portable deployment
+
+== The Name
+
+"Candy Crash" is intentional provocation.
+
+The name evokes the dopamine-driven, attention-capturing design of mobile games. This system takes that same environmental-saturation approach but redirects it toward genuine human capability development.
+
+Instead of capturing attention to extract value, we saturate the environment to cultivate competence.
+
+The crash is what we prevent.
 
 == Contributing
 
-. Fork the repository
-. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-. Push to the branch (`git push origin feature/AmazingFeature`)
-. Open a Pull Request
+This project requires contributors who understand:
+
+* Embodied cognition and ecological psychology
+* Pervasive/ubiquitous computing architectures
+* Real-time systems engineering
+* Human factors and ergonomics
+* The specific vehicle domains being addressed
+* Privacy-preserving system design
+
+See link:./CONTRIBUTING.adoc[CONTRIBUTING.adoc].
 
 == License
 
-This project is licensed under *GPL-3.0-or-later*.
+GPL-3.0-or-later
 
-See link:./LICENSE.txt[LICENSE.txt] for full terms. All source files include SPDX headers for license compliance.
+The system that trains humans to operate vehicles must remain free. No entity should be able to enclose and privatize the cultivation of human capability.
 
-== Documentation
+== References
 
-* link:./SECURITY.md[SECURITY.md] - Security policy and vulnerability reporting
-* link:./CONTRIBUTING.adoc[CONTRIBUTING.adoc] - Contribution guidelines
-* link:./CODE_OF_CONDUCT.adoc[CODE_OF_CONDUCT.adoc] - Community standards
-* link:./GOVERNANCE.adoc[GOVERNANCE.adoc] - TPCF governance model
-* link:./CHANGELOG.adoc[CHANGELOG.adoc] - Version history
-* link:./RSR_COMPLIANCE.adoc[RSR_COMPLIANCE.adoc] - RSR Gold compliance report
-* link:./CLAUDE.adoc[CLAUDE.adoc] - AI assistant instructions
+=== Foundational Theory
 
-== Contact
+* Weiser, M. (1991). The Computer for the 21st Century. Scientific American.
+* Gibson, J.J. (1979). The Ecological Approach to Visual Perception.
+* Clark, A. & Chalmers, D. (1998). The Extended Mind.
+* Dreyfus, H. (1972). What Computers Can't Do.
+* Varela, F., Thompson, E., & Rosch, E. (1991). The Embodied Mind.
+* Lave, J. & Wenger, E. (1991). Situated Learning: Legitimate Peripheral Participation.
 
-*Project*: https://github.com/Hyperpolymath/candy-crash
+=== Human Factors and Cognitive Ergonomics
 
-*Security Issues*: See link:./public/.well-known/security.txt[.well-known/security.txt] (RFC 9116)
+* Endsley, M.R. (1995). Toward a Theory of Situation Awareness in Dynamic Systems. Human Factors.
+* Sweller, J. (1988). Cognitive Load During Problem Solving. Cognitive Science.
+* Wickens, C.D. (2008). Multiple Resources and Mental Workload. Human Factors.
+* Mark, G., Gudith, D., & Klocke, U. (2008). The Cost of Interrupted Work. CHI.
+* Parasuraman, R. & Riley, V. (1997). Humans and Automation: Use, Misuse, Disuse, Abuse. Human Factors.
+
+=== Motor Learning and Transfer
+
+* Schmidt, R.A. & Lee, T.D. (2011). Motor Control and Learning: A Behavioral Emphasis.
+* Thorndike, E.L. & Woodworth, R.S. (1901). The Influence of Improvement in One Mental Function upon the Efficiency of Other Functions.
+* Barnett, S.M. & Ceci, S.J. (2002). When and Where Do We Apply What We Learn? Psychological Bulletin.
+
+=== Vehicle Operation and Automation
+
+* SAE International (2021). J3016: Taxonomy and Definitions for Terms Related to Driving Automation Systems.
+* Bainbridge, L. (1983). Ironies of Automation. Automatica.
+* Casner, S.M., Hutchins, E.L., & Norman, D. (2016). The Challenges of Partially Automated Driving. Communications of the ACM.
+* Stanton, N.A. & Young, M.S. (1998). Vehicle Automation and Driving Performance. Ergonomics.
 
 ---
 
-*Built with Ruby on Rails* | *RSR Gold Compliance* | *PRIMROSE Protocol*
+_The training that disappears into life itself._
