@@ -409,6 +409,8 @@ The existing Rails application, database schema, and quiz engine represent the *
 
 This must be rebuilt from first principles.
 
+See link:./ROADMAP.adoc[ROADMAP.adoc] for the practical path forward, including blockers and key decisions.
+
 == Technology Direction
 
 Given the RSR compliance requirements and the nature of the system:
