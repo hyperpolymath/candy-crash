@@ -141,6 +141,34 @@ Ambient training systems have manipulation potential. We must constrain this:
 
 Deliverable: `docs/ethics/framework.adoc`
 
+==== 0.5 Human Factors Analysis
+
+Ambient training must respect cognitive and ergonomic constraints. Document:
+
+* **Attention Budget Model**: How much cognitive load can ambient training impose without degrading primary activities? What is the cost-benefit calculus for interventions?
+
+* **Transfer Validation Framework**: For each micro-skill, what evidence supports ambient trainability? Which skills require in-vehicle practice and cannot be trained ambiently?
+
+* **Vigilance and Habituation Analysis**: How do we prevent the system from becoming background noise? What variation and spacing prevents habituation?
+
+* **Situation Awareness Mapping**: Map each micro-skill to Endsley's SA levels (perception, comprehension, projection). Ensure training addresses all three levels, not just perceptual exposure.
+
+* **Dual-Task Interference Assessment**: For each training context (walking, sitting, passenger), what is the interference profile? When is training counterproductive?
+
+Deliverable: `docs/human-factors/analysis.adoc`
+
+==== 0.6 Operational Paradigms Documentation
+
+Document how the framework applies across operational paradigms:
+
+* **Manual Operation**: Full human control, current focus. What competencies? What training approaches?
+
+* **Hybrid Operation** (SAE L1-L3): Shared control. What changes? What new competencies emerge (monitoring, takeover, trust calibration)?
+
+* **Autonomous Operation** (SAE L4-L5): Machine primary control. What residual human competencies matter? Emergency intervention? System supervision?
+
+Deliverable: `docs/paradigms/` with documents for each paradigm and analysis of paradigm transitions.
+
 === Phase 1: Core Intelligence (Rust)
 
 The central system that observes, models, plans, and acts.
@@ -205,6 +233,10 @@ The planner must respect:
 * Skill priorities (focus on highest-value gaps)
 * Modality availability (can't do visual if trainee is driving)
 * Spaced repetition (don't overtrain recently-trained skills)
+* **Attention budget** (interventions have cognitive cost—don't exceed budget)
+* **Habituation prevention** (vary interventions, respect refractory periods)
+* **Primary task protection** (never degrade safety-critical activities)
+* **Silence as valid output** (sometimes the best intervention is no intervention)
 
 ==== 1.4 Outcome Observer
 
@@ -395,7 +427,16 @@ Small-scale real-world testing:
 * Longitudinal competence tracking
 * Safety monitoring
 
-==== 6.3 Effectiveness Studies
+==== 6.3 Transfer Validation
+
+Critical question: does ambient training actually transfer to vehicle operation?
+
+* **Near transfer**: Does gap timing training while walking improve gap timing perception while driving?
+* **Far transfer**: Does general situational awareness training improve overall driving safety?
+* **Skill-specific validation**: For each micro-skill, empirically test whether ambient training produces measurable competence gains in actual vehicle operation
+* **Null results are valuable**: If a training approach doesn't transfer, document it and remove it from the system
+
+==== 6.4 Effectiveness Studies
 
 Rigorous measurement:
 
@@ -403,6 +444,9 @@ Rigorous measurement:
 * Does it reduce incident rates post-licensing?
 * Does it accelerate competence development?
 * What are the optimal training parameters?
+* **Which micro-skills show strongest transfer?** (Focus development here)
+* **Which training contexts are most effective?** (Walking vs. sitting vs. passenger)
+* **What is the minimum effective dose?** (Avoid over-training)
 
 == Immediate Next Steps
 
@@ -429,6 +473,16 @@ docs/
 │   └── architecture.adoc
 ├── ethics/
 │   └── framework.adoc
+├── human-factors/
+│   ├── analysis.adoc
+│   ├── attention-model.adoc
+│   ├── transfer-framework.adoc
+│   └── situation-awareness.adoc
+├── paradigms/
+│   ├── manual-operation.adoc      # Current focus
+│   ├── hybrid-operation.adoc      # Future: SAE L1-L3
+│   ├── autonomous-operation.adoc  # Future: SAE L4-L5
+│   └── paradigm-transitions.adoc  # How skills evolve across paradigms
 └── architecture/
     ├── overview.adoc
     ├── core-intelligence.adoc
@@ -466,15 +520,39 @@ Minimal viable training:
 
 These require decisions before proceeding:
 
-1. **Scope**: Should v1 focus on a single vehicle domain (car) or attempt all four?
+=== Scope and Focus
 
-2. **Hardware**: Should we target existing consumer devices only, or design custom hardware?
+1. **Vehicle Domain**: Should v1 focus on a single vehicle domain (car) or attempt all four?
 
-3. **Regulatory**: How do we interact with existing driver training and licensing regimes?
+2. **Operational Paradigm**: We're focusing on manual operation—but should we also prototype hybrid-operation training (monitoring, takeover) given current automotive trends?
 
-4. **Business Model**: How is this funded? (GPL means no proprietary licensing)
+3. **Geographic Context**: UK driving test alignment is mentioned—should the system be region-agnostic or region-specific?
 
-5. **Community**: How do we attract contributors with the necessary cross-disciplinary expertise?
+=== Hardware and Platform
+
+4. **Hardware**: Should we target existing consumer devices only, or design custom hardware?
+
+5. **Minimum Viable Sensing**: What is the true minimum sensor set that enables useful training? Is smartphone-only viable?
+
+=== Human Factors Empiricism
+
+6. **Transfer Baseline**: Before building, should we conduct preliminary studies to validate that ANY ambient training transfers to vehicle operation?
+
+7. **Attention Budget Empiricism**: How do we determine actual cognitive load limits? Lab studies? Field studies? Literature synthesis?
+
+8. **Habituation Dynamics**: What intervention spacing and variation prevents habituation? This may need empirical calibration per modality.
+
+=== Regulatory and Social
+
+9. **Regulatory**: How do we interact with existing driver training and licensing regimes?
+
+10. **Instructor Integration**: Should the system integrate with human driving instructors, or operate independently?
+
+=== Sustainability
+
+11. **Business Model**: How is this funded? (GPL means no proprietary licensing)
+
+12. **Community**: How do we attract contributors with the necessary cross-disciplinary expertise (human factors, embodied cognition, real-time systems)?
 
 == Timeline
 
