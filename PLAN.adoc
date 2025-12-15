@@ -1,0 +1,577 @@
+= Candy Crash: Plan of Action
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+
+**From Misguided LMS to Pervasive Ambient Vehicle Training**
+
+toc::[]
+
+== Assessment of Current State
+
+=== What Exists
+
+The repository contains a Ruby on Rails Learning Management System:
+
+* 16 ActiveRecord models (User, Course, Lesson, Quiz, etc.)
+* Devise authentication with role-based access
+* Quiz engine with multiple-choice questions
+* Progress tracking and achievement system
+* ~1,263 lines of Ruby code
+* ~40 RSpec test files
+* Comprehensive CI/CD and RSR compliance infrastructure
+
+=== Why It Is Wrong
+
+This architecture embodies the wrong paradigm:
+
+[cols="1,1"]
+|===
+|LMS Assumption |Reality of Skill Acquisition
+
+|Learning is content consumption
+|Learning is environmental coupling
+
+|Knowledge transfers from abstract to embodied
+|Embodied skill must be grown in context
+
+|Progress is linear through modules
+|Competence is a multidimensional landscape
+
+|Assessment is quiz-based
+|Competence manifests in perception-action loops
+
+|Training happens at scheduled times
+|Training must be continuous and ambient
+
+|The learner comes to the system
+|The system must pervade the learner's environment
+|===
+
+The existing code cannot be "refactored" into the correct paradigm. The fundamental data model, the interaction patterns, the entire conceptual architecture—all wrong.
+
+=== What Should Be Kept
+
+* RSR compliance documentation and structure
+* CI/CD infrastructure (GitHub Actions workflows)
+* Container configuration (Containerfile, Nix flake)
+* Governance and contribution framework
+* Security infrastructure (.well-known, security headers)
+* Git hooks and automation (justfile structure)
+
+These represent operational infrastructure independent of the application paradigm.
+
+== The Rebuild
+
+=== Decision Point: Clean Slate vs. Incremental
+
+Two options:
+
+**Option A: Delete and Restart**
+* Remove all Ruby/Rails code
+* Keep only infrastructure
+* Begin fresh with correct architecture
+
+**Option B: Gradual Replacement**
+* Keep Rails running for reference
+* Build new system alongside
+* Migrate when new system reaches parity
+
+**Recommendation**: Option A. The existing code provides no value for the new paradigm. Keeping it creates confusion and maintenance burden.
+
+=== Phase 0: Conceptual Foundation (No Code)
+
+Before writing implementation code, the following must be completed:
+
+==== 0.1 Competence Modeling
+
+For each vehicle domain (car, motorbike, aircraft, watercraft), produce:
+
+* **Perception-Action Decomposition**: What does skilled operation actually consist of? Not "knowing the highway code" but "perceiving gap timing in flowing traffic" or "feeling the slip angle through the seat."
+
+* **Micro-Skill Taxonomy**: Break competence into the smallest trainable units. Example for car: "left-mirror check timing," "clutch-bite-point proprioception," "three-second-rule distance calibration."
+
+* **Dependency Graph**: Which micro-skills depend on which others? What is the minimum viable competence for safe operation?
+
+* **Ambient Trainability Assessment**: Which micro-skills can be trained ambiently (without being in the vehicle)? Which require actual vehicle time?
+
+Deliverable: `docs/competence-model/` with structured documents per vehicle domain.
+
+==== 0.2 Sensor/Actuator Requirements
+
+Define what hardware is needed:
+
+* **Minimum Viable Sensor Set**: What is the absolute minimum sensing required? (Probably: smartphone accelerometer + location + wearable heart rate)
+
+* **Full Vision Sensor Set**: What would complete environmental awareness require? (Wearables, environmental sensors, vehicle OBD integration, eye tracking, etc.)
+
+* **Minimum Viable Actuator Set**: What is the minimum output? (Probably: smartphone haptics + audio + notifications)
+
+* **Full Vision Actuator Set**: What would complete environmental modulation require? (Spatial audio, AR glasses, haptic gloves/vest, smart home integration, vehicle HUD)
+
+Deliverable: `docs/hardware/sensor-requirements.adoc` and `docs/hardware/actuator-requirements.adoc`
+
+==== 0.3 Privacy Architecture
+
+The system will have unprecedented access to the trainee's life. This requires:
+
+* **Data Minimization Specification**: What is the minimum data needed? How quickly can it be discarded?
+
+* **Local-First Architecture**: All processing must happen on trainee-controlled devices. No cloud dependency for core function.
+
+* **Consent Framework**: How does the trainee control what the system perceives and when?
+
+* **Data Sovereignty**: How does the trainee export, delete, and control all their data?
+
+Deliverable: `docs/privacy/architecture.adoc`
+
+==== 0.4 Ethical Framework
+
+Ambient training systems have manipulation potential. We must constrain this:
+
+* **No Dark Patterns**: The system may not use psychological manipulation to increase engagement.
+
+* **No Gamification for Its Own Sake**: Achievements, points, streaks—these capture attention without building competence. Avoid them.
+
+* **Honest Assessment**: The system must never tell trainees they are more competent than they are.
+
+* **Right to Disconnect**: The trainee can always turn the system off without penalty.
+
+* **Certification Independence**: The system trains but does not certify. Certification remains with appropriate authorities.
+
+Deliverable: `docs/ethics/framework.adoc`
+
+==== 0.5 Human Factors Analysis
+
+Ambient training must respect cognitive and ergonomic constraints. Document:
+
+* **Attention Budget Model**: How much cognitive load can ambient training impose without degrading primary activities? What is the cost-benefit calculus for interventions?
+
+* **Transfer Validation Framework**: For each micro-skill, what evidence supports ambient trainability? Which skills require in-vehicle practice and cannot be trained ambiently?
+
+* **Vigilance and Habituation Analysis**: How do we prevent the system from becoming background noise? What variation and spacing prevents habituation?
+
+* **Situation Awareness Mapping**: Map each micro-skill to Endsley's SA levels (perception, comprehension, projection). Ensure training addresses all three levels, not just perceptual exposure.
+
+* **Dual-Task Interference Assessment**: For each training context (walking, sitting, passenger), what is the interference profile? When is training counterproductive?
+
+Deliverable: `docs/human-factors/analysis.adoc`
+
+==== 0.6 Operational Paradigms Documentation
+
+Document how the framework applies across operational paradigms:
+
+* **Manual Operation**: Full human control, current focus. What competencies? What training approaches?
+
+* **Hybrid Operation** (SAE L1-L3): Shared control. What changes? What new competencies emerge (monitoring, takeover, trust calibration)?
+
+* **Autonomous Operation** (SAE L4-L5): Machine primary control. What residual human competencies matter? Emergency intervention? System supervision?
+
+Deliverable: `docs/paradigms/` with documents for each paradigm and analysis of paradigm transitions.
+
+=== Phase 1: Core Intelligence (Rust)
+
+The central system that observes, models, plans, and acts.
+
+==== 1.1 State Perception Module
+
+Input: sensor data streams
+Output: trainee state representation
+
+[source]
+----
+TraineeState {
+    physiological: {
+        alertness: f32,      // 0.0 (asleep) to 1.0 (peak)
+        stress: f32,         // 0.0 (calm) to 1.0 (crisis)
+        fatigue: f32,        // 0.0 (fresh) to 1.0 (exhausted)
+    },
+    context: {
+        activity: Activity,   // walking, sitting, driving, sleeping, etc.
+        location: Location,   // home, transit, vehicle, workplace, etc.
+        attention: Attention, // available, partial, unavailable
+    },
+    receptivity: f32,        // computed: how trainable is this moment?
+}
+----
+
+==== 1.2 Competence Model
+
+Data structure representing what the trainee can and cannot do.
+
+[source]
+----
+CompetenceModel {
+    domain: VehicleDomain,
+    micro_skills: Map<MicroSkillId, SkillState>,
+    // SkillState includes:
+    //   - estimated_competence: f32
+    //   - confidence: f32 (how sure are we of the estimate?)
+    //   - last_assessed: Timestamp
+    //   - decay_rate: f32 (how fast does this skill fade?)
+}
+----
+
+==== 1.3 Intervention Planner
+
+Given: current TraineeState + CompetenceModel
+Output: optimal intervention (or no intervention)
+
+[source]
+----
+Intervention {
+    target_skill: MicroSkillId,
+    modality: Modality,      // haptic, audio, visual, proprioceptive
+    intensity: f32,          // how demanding is this intervention?
+    duration: Duration,
+    content: InterventionContent,
+}
+----
+
+The planner must respect:
+* Current receptivity (don't train when asleep or stressed)
+* Skill priorities (focus on highest-value gaps)
+* Modality availability (can't do visual if trainee is driving)
+* Spaced repetition (don't overtrain recently-trained skills)
+* **Attention budget** (interventions have cognitive cost—don't exceed budget)
+* **Habituation prevention** (vary interventions, respect refractory periods)
+* **Primary task protection** (never degrade safety-critical activities)
+* **Silence as valid output** (sometimes the best intervention is no intervention)
+
+==== 1.4 Outcome Observer
+
+After intervention: did it work?
+
+Input: pre-intervention state, intervention, post-intervention sensor data
+Output: estimated skill delta
+
+This closes the loop: intervention → observation → model update → next intervention.
+
+==== 1.5 Storage Layer
+
+All state persists locally:
+
+* SQLite for structured data (competence models, intervention history)
+* Time-series storage for sensor streams (probably custom or embedded InfluxDB)
+* All encrypted at rest with trainee-controlled keys
+
+=== Phase 2: Sensor Integration (Rust)
+
+==== 2.1 Abstraction Layer
+
+Sensors must be abstracted:
+
+[source]
+----
+trait SensorSource {
+    fn capabilities(&self) -> SensorCapabilities;
+    fn subscribe(&self, callback: SensorCallback);
+    fn current_state(&self) -> SensorReading;
+}
+----
+
+==== 2.2 Smartphone Integration
+
+The smartphone is the minimum viable sensor platform:
+
+* Accelerometer → motion, activity detection
+* GPS → location, speed (as passenger), route patterns
+* Microphone → ambient sound classification (traffic, vehicle interior)
+* Camera → (optional) visual scene classification
+
+Implementation: Native apps (iOS/Android) with local processing, communicating with core over local network.
+
+==== 2.3 Wearable Integration
+
+Heart rate, HRV, skin conductance:
+
+* Integration with existing fitness wearables (Garmin, Apple Watch, etc.)
+* Custom wearable protocols for future development
+
+==== 2.4 Vehicle Integration
+
+OBD-II for ground vehicles:
+
+* Speed, RPM, throttle position, brake status
+* Real driving data for competence assessment
+
+For aircraft/watercraft: domain-specific protocols (NMEA for marine, etc.)
+
+=== Phase 3: Actuator Integration (Rust + ReScript)
+
+==== 3.1 Abstraction Layer
+
+[source]
+----
+trait ActuatorSink {
+    fn capabilities(&self) -> ActuatorCapabilities;
+    fn send(&self, command: ActuatorCommand) -> Result<()>;
+}
+----
+
+==== 3.2 Smartphone Output
+
+* Haptic patterns (vibration sequences encoding information)
+* Audio (spatial audio for situational awareness training)
+* Notifications (non-intrusive prompts)
+* AR overlay (camera-based, limited but accessible)
+
+==== 3.3 Audio System
+
+Spatial audio is critical for:
+
+* Traffic awareness training (sounds from correct directions)
+* Procedure memorization (audio cues for sequences)
+* Ambient environmental modulation
+
+Integration: Core sends audio scene descriptions → audio renderer produces spatial output.
+
+==== 3.4 AR System
+
+For visual overlay training:
+
+* Traffic flow visualization
+* Hazard prediction zones
+* Gap timing indicators
+
+Initial implementation: smartphone-based. Future: smart glasses integration.
+
+==== 3.5 Haptic System
+
+For procedural embodiment:
+
+* Steering feel simulation (resistance patterns)
+* Brake feel simulation (force feedback)
+* Control surface feel (for aircraft)
+
+Initial implementation: smartphone/wearable vibration. Future: dedicated haptic devices.
+
+=== Phase 4: Domain Modules (Rust + Domain Knowledge)
+
+Each vehicle domain requires:
+
+==== 4.1 Ground Vehicle (Car) Module
+
+* Competence model implementation
+* Micro-intervention library:
+  ** Gap timing training (audio cues while pedestrian)
+  ** Mirror check habituation (haptic prompts)
+  ** Hazard prediction (visual overlays)
+  ** Speed calibration (proprioceptive training)
+* Assessment methodology (in-vehicle observation)
+* UK driving test alignment
+
+==== 4.2 Motorcycle Module
+
+* Balance/countersteering intuition training
+* Lean angle perception
+* Vulnerability awareness
+* Emergency procedures
+
+==== 4.3 Aircraft Module
+
+* Instrument scan pattern training
+* Spatial orientation training
+* Procedure memorization (flows and checklists)
+* Decision-making frameworks
+
+==== 4.4 Watercraft Module
+
+* Momentum/inertia intuition
+* Weather awareness
+* Navigation procedures
+* Emergency protocols
+
+=== Phase 5: User Interface (ReScript)
+
+==== 5.1 Configuration Interface
+
+Web-based UI for:
+
+* System setup and calibration
+* Training goals and preferences
+* Privacy controls
+* Sensor/actuator configuration
+
+==== 5.2 Insight Dashboard
+
+* Competence landscape visualization
+* Training history
+* Progress over time
+* Recommendations
+
+==== 5.3 Training Control
+
+* Pause/resume training
+* Intensity adjustment
+* Domain focus selection
+* Manual intervention triggering
+
+=== Phase 6: Validation
+
+==== 6.1 Simulation Testing
+
+Before real-world deployment:
+
+* Synthetic trainee simulation
+* Edge case testing
+* Privacy verification
+* Performance benchmarking
+
+==== 6.2 Pilot Studies
+
+Small-scale real-world testing:
+
+* Volunteer trainees with informed consent
+* A/B comparison with traditional training
+* Longitudinal competence tracking
+* Safety monitoring
+
+==== 6.3 Transfer Validation
+
+Critical question: does ambient training actually transfer to vehicle operation?
+
+* **Near transfer**: Does gap timing training while walking improve gap timing perception while driving?
+* **Far transfer**: Does general situational awareness training improve overall driving safety?
+* **Skill-specific validation**: For each micro-skill, empirically test whether ambient training produces measurable competence gains in actual vehicle operation
+* **Null results are valuable**: If a training approach doesn't transfer, document it and remove it from the system
+
+==== 6.4 Effectiveness Studies
+
+Rigorous measurement:
+
+* Does ambient training improve driving test pass rates?
+* Does it reduce incident rates post-licensing?
+* Does it accelerate competence development?
+* What are the optimal training parameters?
+* **Which micro-skills show strongest transfer?** (Focus development here)
+* **Which training contexts are most effective?** (Walking vs. sitting vs. passenger)
+* **What is the minimum effective dose?** (Avoid over-training)
+
+== Immediate Next Steps
+
+=== Step 1: Clean the Repository
+
+* Remove Rails application code (app/, db/, config/, spec/)
+* Keep infrastructure (CI/CD, containers, documentation)
+* Update .claude/CLAUDE.md to reflect new direction
+* Remove misleading TS_CONVERSION_NEEDED.md (not relevant)
+
+=== Step 2: Create Documentation Structure
+
+----
+docs/
+├── competence-model/
+│   ├── car.adoc
+│   ├── motorcycle.adoc
+│   ├── aircraft.adoc
+│   └── watercraft.adoc
+├── hardware/
+│   ├── sensor-requirements.adoc
+│   └── actuator-requirements.adoc
+├── privacy/
+│   └── architecture.adoc
+├── ethics/
+│   └── framework.adoc
+├── human-factors/
+│   ├── analysis.adoc
+│   ├── attention-model.adoc
+│   ├── transfer-framework.adoc
+│   └── situation-awareness.adoc
+├── paradigms/
+│   ├── manual-operation.adoc      # Current focus
+│   ├── hybrid-operation.adoc      # Future: SAE L1-L3
+│   ├── autonomous-operation.adoc  # Future: SAE L4-L5
+│   └── paradigm-transitions.adoc  # How skills evolve across paradigms
+└── architecture/
+    ├── overview.adoc
+    ├── core-intelligence.adoc
+    ├── sensor-integration.adoc
+    └── actuator-integration.adoc
+----
+
+=== Step 3: Begin Competence Modeling
+
+Start with car (most common use case):
+
+* Interview driving instructors
+* Analyze examiner assessment criteria
+* Review cognitive psychology of driving literature
+* Decompose into micro-skills
+
+=== Step 4: Prototype Core Intelligence
+
+Minimal implementation in Rust:
+
+* Simple state perception (smartphone only)
+* Basic competence model (single domain, few skills)
+* Simple planner (spaced repetition only)
+* SQLite storage
+
+=== Step 5: Prototype Smartphone App
+
+Minimal viable training:
+
+* Accelerometer-based activity detection
+* Audio-based interventions
+* Single training mode (gap timing while walking)
+
+== Open Questions
+
+These require decisions before proceeding:
+
+=== Scope and Focus
+
+1. **Vehicle Domain**: Should v1 focus on a single vehicle domain (car) or attempt all four?
+
+2. **Operational Paradigm**: We're focusing on manual operation—but should we also prototype hybrid-operation training (monitoring, takeover) given current automotive trends?
+
+3. **Geographic Context**: UK driving test alignment is mentioned—should the system be region-agnostic or region-specific?
+
+=== Hardware and Platform
+
+4. **Hardware**: Should we target existing consumer devices only, or design custom hardware?
+
+5. **Minimum Viable Sensing**: What is the true minimum sensor set that enables useful training? Is smartphone-only viable?
+
+=== Human Factors Empiricism
+
+6. **Transfer Baseline**: Before building, should we conduct preliminary studies to validate that ANY ambient training transfers to vehicle operation?
+
+7. **Attention Budget Empiricism**: How do we determine actual cognitive load limits? Lab studies? Field studies? Literature synthesis?
+
+8. **Habituation Dynamics**: What intervention spacing and variation prevents habituation? This may need empirical calibration per modality.
+
+=== Regulatory and Social
+
+9. **Regulatory**: How do we interact with existing driver training and licensing regimes?
+
+10. **Instructor Integration**: Should the system integrate with human driving instructors, or operate independently?
+
+=== Sustainability
+
+11. **Business Model**: How is this funded? (GPL means no proprietary licensing)
+
+12. **Community**: How do we attract contributors with the necessary cross-disciplinary expertise (human factors, embodied cognition, real-time systems)?
+
+== Timeline
+
+No timeline provided. The phases are sequential dependencies, not calendar commitments. Move as fast as competent execution allows.
+
+== Conclusion
+
+The existing codebase represents a failed approach. The correct approach—pervasive ambient training—requires a fundamental rebuild.
+
+The path forward:
+
+1. Establish conceptual foundation (competence models, privacy, ethics)
+2. Build core intelligence (state perception, competence modeling, intervention planning)
+3. Integrate sensors and actuators
+4. Develop domain-specific training modules
+5. Validate effectiveness
+
+This is a significant undertaking. But training humans to operate vehicles safely is worth doing correctly.
+
+---
+
+_Build the system that disappears into life itself._
