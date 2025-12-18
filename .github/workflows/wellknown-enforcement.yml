@@ -1,4 +1,8 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 name: Well-Known Standards (RFC 9116 + RSR)
+
+permissions: read-all
+
 on:
   push:
     branches: [main, master]
@@ -17,7 +21,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       
       - name: RFC 9116 security.txt validation
         run: |

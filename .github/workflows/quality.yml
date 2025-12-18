@@ -1,41 +1,45 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 name: Code Quality
+
 on: [push, pull_request]
+
+permissions: read-all
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
       - name: Check file permissions
         run: |
           find . -type f -perm /111 -name "*.sh" | head -10 || true
-      
+
       - name: Check for secrets
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@8a590eea0c7dc54ebf6ee9d7a34c8b3d59d4e7a8 # v3.82.7
         with:
           path: ./
           base: ${{ github.event.pull_request.base.sha || github.event.before }}
           head: ${{ github.sha }}
         continue-on-error: true
-      
+
       - name: Check TODO/FIXME
         run: |
           echo "=== TODOs ==="
           grep -rn "TODO\|FIXME\|HACK\|XXX" --include="*.rs" --include="*.res" --include="*.py" --include="*.ex" . | head -20 || echo "None found"
-      
+
       - name: Check for large files
         run: |
           find . -type f -size +1M -not -path "./.git/*" | head -10 || echo "No large files"
-      
+
       - name: EditorConfig check
-        uses: editorconfig-checker/action-editorconfig-checker@main
+        uses: editorconfig-checker/action-editorconfig-checker@8554b3dc1044ebf60a2f34fb63cd42376c1b5e12 # v2.0.0
         continue-on-error: true
 
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - name: Check documentation
         run: |
           MISSING=""
