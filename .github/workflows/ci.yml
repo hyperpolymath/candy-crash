@@ -62,7 +62,7 @@ jobs:
         env:
           COVERAGE: true
       - name: Upload coverage
-        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v5.0.2
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.0.2
         if: always()
         with:
           files: ./coverage/lcov.info
