@@ -36,6 +36,9 @@
 | Swift | Tauri/Dioxus |
 | React Native | Tauri/Dioxus |
 | Flutter/Dart | Tauri/Dioxus |
+| Ruby | Gleam |
+| Ruby on Rails | Gleam |
+| Bundler/Gemfile | Gleam deps |
 
 ### Mobile Development
 
@@ -54,6 +57,8 @@ Both are FOSS with independent governance (no Big Tech).
 4. **No Go code** - Use Rust instead
 5. **Python only for SaltStack** - All other Python must be rewritten
 6. **No Kotlin/Swift for mobile** - Use Tauri 2.0+ or Dioxus
+7. **No Ruby/Rails code** - Convert existing Ruby to Gleam
+8. **No Gemfile/Bundler** - Use Gleam package management (gleam.toml)
 
 ### Package Management
 
