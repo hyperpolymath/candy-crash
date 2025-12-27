@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+name: Gleam CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/gleam-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Erlang/OTP and Gleam
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: '26.0'
+          gleam-version: '1.6.3'
+
+      - name: Cache Gleam build
+        uses: actions/cache@v4
+        with:
+          path: |
+            backend/build
+            ~/.cache/gleam
+          key: ${{ runner.os }}-gleam-${{ hashFiles('backend/gleam.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gleam-
+
+      - name: Download dependencies
+        run: gleam deps download
+
+      - name: Build
+        run: gleam build
+
+      - name: Run tests
+        run: gleam test
+
+      - name: Check formatting
+        run: gleam format --check src test
+
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t candy-crash-backend:${{ github.sha }} -f backend/Dockerfile backend/
