@@ -14,6 +14,7 @@ import candy_crash/handlers/quizzes as quizzes_handler
 import candy_crash/handlers/enrollments as enrollments_handler
 import candy_crash/handlers/dashboard as dashboard_handler
 import candy_crash/handlers/achievements as achievements_handler
+import candy_crash/handlers/training as training_handler
 import candy_crash/middleware/auth as auth_middleware
 import candy_crash/middleware/cors
 
@@ -136,6 +137,34 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
       use auth_ctx <- auth_middleware.require_auth(req, ctx)
       use auth_ctx <- auth_middleware.require_admin(auth_ctx)
       courses_handler.admin_courses(req, auth_ctx)
+    }
+
+    // Training Loop API
+    ["api", "training", "skills"] -> training_handler.list_skills(req, ctx)
+
+    ["api", "training", "session", "start"] -> {
+      use auth_ctx <- auth_middleware.require_auth(req, ctx)
+      training_handler.start_session(req, auth_ctx)
+    }
+    ["api", "training", "session", session_id] -> {
+      use auth_ctx <- auth_middleware.require_auth(req, ctx)
+      training_handler.get_session(req, auth_ctx, session_id)
+    }
+    ["api", "training", "session", session_id, "next"] -> {
+      use auth_ctx <- auth_middleware.require_auth(req, ctx)
+      training_handler.next_intervention(req, auth_ctx, session_id)
+    }
+    ["api", "training", "session", session_id, "end"] -> {
+      use auth_ctx <- auth_middleware.require_auth(req, ctx)
+      training_handler.end_session(req, auth_ctx, session_id)
+    }
+    ["api", "training", "intervention", intervention_id, "respond"] -> {
+      use auth_ctx <- auth_middleware.require_auth(req, ctx)
+      training_handler.respond_to_intervention(req, auth_ctx, intervention_id)
+    }
+    ["api", "training", "competence"] -> {
+      use auth_ctx <- auth_middleware.require_auth(req, ctx)
+      training_handler.get_competence(req, auth_ctx)
     }
 
     // 404 for everything else

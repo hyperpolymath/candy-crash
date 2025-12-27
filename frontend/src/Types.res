@@ -143,3 +143,84 @@ type userAchievement = {
   earnedAt: string,
   achievement: option<achievement>,
 }
+
+// Training Loop Types
+type microSkill = {
+  id: string,
+  name: string,
+  description: string,
+  domain: string,
+  saLevel: string,
+  ambientTrainable: bool,
+  modalities: array<string>,
+}
+
+type skillState = {
+  skillId: string,
+  competence: float,
+  confidence: float,
+  lastTrained: option<string>,
+  lastAssessed: option<string>,
+  attemptCount: int,
+  successCount: int,
+}
+
+type competenceModel = {
+  key: option<string>,
+  userKey: string,
+  domain: string,
+  skills: array<skillState>,
+}
+
+type interventionContent = {
+  @as("type") contentType: string,
+  gapStartMs: option<int>,
+  gapEndMs: option<int>,
+  approachDurationMs: option<int>,
+}
+
+type intervention = {
+  id: string,
+  targetSkillId: string,
+  modality: string,
+  difficulty: float,
+  content: interventionContent,
+  expectedDurationMs: int,
+}
+
+type interventionResult = {
+  interventionId: string,
+  deliveredAt: string,
+  responseTimeMs: option<int>,
+  outcome: string,
+}
+
+type trainingSession = {
+  key: option<string>,
+  userKey: string,
+  domain: string,
+  startedAt: string,
+  endedAt: option<string>,
+  status: string,
+  initialActivity: string,
+  interventions: array<interventionResult>,
+}
+
+type traineeState = {
+  activity: string,
+  attention: string,
+  lastInterventionAt: option<string>,
+  sessionInterventionCount: int,
+}
+
+type sessionSummary = {
+  totalInterventions: int,
+  correctResponses: int,
+  accuracy: float,
+}
+
+type interventionResponse = {
+  outcome: string,
+  newCompetence: float,
+  feedback: string,
+}
