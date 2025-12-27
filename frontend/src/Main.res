@@ -29,6 +29,9 @@ type route =
   | Demo
   | Login
   | Register
+  | ForgotPassword
+  | Privacy
+  | Terms
   | NotFound
 
 type model = {
@@ -47,6 +50,9 @@ type model = {
   demoState: Pages.Demo.demoState,
   demoStartTime: option<float>,
   demoElapsedMs: int,
+  // Forgot password state
+  forgotPasswordEmail: string,
+  forgotPasswordState: Pages.ForgotPassword.forgotPasswordState,
 }
 
 type msg =
@@ -82,6 +88,10 @@ type msg =
   | DemoRespond
   | DemoNextChallenge
   | DemoEnd
+  // Forgot password messages
+  | ForgotPasswordEmailChanged(string)
+  | ForgotPasswordSubmit
+  | ForgotPasswordResult(result<string, string>)
 
 // Route parsing
 let parseRoute = (path: string): route => {
@@ -98,6 +108,9 @@ let parseRoute = (path: string): route => {
   | ["demo"] => Demo
   | ["login"] => Login
   | ["register"] => Register
+  | ["forgot-password"] => ForgotPassword
+  | ["privacy"] => Privacy
+  | ["terms"] => Terms
   | _ => NotFound
   }
 }
@@ -115,6 +128,9 @@ let routeToPath = (route: route): string => {
   | Demo => "/demo"
   | Login => "/login"
   | Register => "/register"
+  | ForgotPassword => "/forgot-password"
+  | Privacy => "/privacy"
+  | Terms => "/terms"
   | NotFound => "/404"
   }
 }
@@ -147,6 +163,8 @@ let init = () => {
     demoState: Pages.Demo.initialDemoState,
     demoStartTime: None,
     demoElapsedMs: 0,
+    forgotPasswordEmail: "",
+    forgotPasswordState: Pages.ForgotPassword.Ready,
   }
 
   let cmd = switch initialRoute {
@@ -428,6 +446,20 @@ let update = (model: model, msg: msg): (model, Cmd.t<msg>) => {
   | DemoEnd =>
     let demoState = {...model.demoState, phase: Pages.Demo.DemoSummary}
     ({...model, demoState, demoStartTime: None, demoElapsedMs: 0}, Cmd.none)
+
+  // Forgot password handlers
+  | ForgotPasswordEmailChanged(email) =>
+    ({...model, forgotPasswordEmail: email}, Cmd.none)
+
+  | ForgotPasswordSubmit =>
+    let cmd = Api.forgotPassword(model.forgotPasswordEmail, result => ForgotPasswordResult(result))
+    ({...model, forgotPasswordState: Pages.ForgotPassword.Submitting}, cmd)
+
+  | ForgotPasswordResult(Ok(_)) =>
+    ({...model, forgotPasswordState: Pages.ForgotPassword.Sent}, Cmd.none)
+
+  | ForgotPasswordResult(Error(err)) =>
+    ({...model, forgotPasswordState: Pages.ForgotPassword.Error(err)}, Cmd.none)
   }
 }
 
@@ -516,6 +548,15 @@ let view = (model: model): Html.t<msg> => {
           )
         | Login => Pages.Login.view(msg => msg)
         | Register => Pages.Register.view(msg => msg)
+        | ForgotPassword =>
+          Pages.ForgotPassword.view(
+            model.forgotPasswordEmail,
+            model.forgotPasswordState,
+            email => ForgotPasswordEmailChanged(email),
+            () => ForgotPasswordSubmit,
+          )
+        | Privacy => Pages.Privacy.view()
+        | Terms => Pages.Terms.view()
         | NotFound => Pages.NotFound.view()
         }
       },
