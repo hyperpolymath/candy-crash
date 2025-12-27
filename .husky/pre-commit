@@ -1,0 +1,62 @@
+#!/bin/sh
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+# Husky pre-commit hook for language policy enforcement
+
+echo "Running language policy checks..."
+
+# Check for TypeScript files
+if git diff --cached --name-only | grep -E '\.(ts|tsx)$' | grep -v node_modules; then
+    echo "ERROR: TypeScript files are not allowed. Use ReScript instead."
+    echo "Banned files:"
+    git diff --cached --name-only | grep -E '\.(ts|tsx)$' | grep -v node_modules
+    exit 1
+fi
+
+# Check for Ruby files in new code (allow in legacy directories for now)
+if git diff --cached --name-only | grep '\.rb$' | grep -v -E '^(app|config|db|lib|spec)/'; then
+    echo "ERROR: Ruby files are not allowed outside legacy directories. Use Gleam instead."
+    exit 1
+fi
+
+# Check for Go files
+if git diff --cached --name-only | grep '\.go$'; then
+    echo "ERROR: Go files are not allowed. Use Rust instead."
+    exit 1
+fi
+
+# Check for Python files (except in salt/)
+if git diff --cached --name-only | grep '\.py$' | grep -v '^salt/'; then
+    echo "ERROR: Python files are only allowed in salt/ directory."
+    exit 1
+fi
+
+# Check for Kotlin/Swift files
+if git diff --cached --name-only | grep -E '\.(kt|swift)$'; then
+    echo "ERROR: Kotlin/Swift files are not allowed. Use Tauri or Dioxus instead."
+    exit 1
+fi
+
+# Check for Gemfile changes (should not be modified)
+if git diff --cached --name-only | grep -E '^Gemfile(\.lock)?$'; then
+    echo "WARNING: Gemfile modifications detected. Use gleam.toml for dependencies."
+fi
+
+# Check for package.json with new runtime deps
+if git diff --cached --name-only | grep 'package\.json$'; then
+    echo "WARNING: package.json changes detected. Prefer deno.json for dependencies."
+fi
+
+# Check for SPDX headers on new files
+for file in $(git diff --cached --name-only --diff-filter=A); do
+    case "$file" in
+        *.gleam|*.res|*.js|*.css|*.html)
+            if ! head -5 "$file" | grep -q "SPDX-License-Identifier"; then
+                echo "WARNING: Missing SPDX license header in $file"
+            fi
+            ;;
+    esac
+done
+
+echo "Language policy checks passed!"

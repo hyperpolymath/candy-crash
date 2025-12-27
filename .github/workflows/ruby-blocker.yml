@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+name: Ruby Blocker
+
+on:
+  push:
+    paths:
+      - '**.rb'
+      - 'Gemfile'
+      - 'Gemfile.lock'
+      - '.ruby-version'
+  pull_request:
+    paths:
+      - '**.rb'
+      - 'Gemfile'
+      - 'Gemfile.lock'
+      - '.ruby-version'
+
+jobs:
+  block-ruby:
+    name: Block Ruby/Rails Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Ruby files
+        run: |
+          echo "Ruby/Rails is BANNED per Hyperpolymath Standard"
+          echo "Use Gleam for backend services instead"
+          echo ""
+          echo "Detected Ruby-related changes:"
+          git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -E '\.(rb|gemspec)$|^Gemfile' || true
+          echo ""
+          echo "Please convert these files to Gleam."
+          echo "See .claude/CLAUDE.md for language policy details."
+          exit 1
