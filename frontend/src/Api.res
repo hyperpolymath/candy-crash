@@ -216,3 +216,196 @@ let completeLesson = (
     }, _)
   })
 }
+
+// Training Loop API
+
+let fetchTrainingSkills = (toMsg: result<array<Types.microSkill>, string> => 'msg): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let _ = Fetch.fetch(apiUrl ++ "/training/skills")
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      let skills = json["skills"]
+      callbacks.enqueue(toMsg(Ok(skills)))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to fetch training skills")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+type startSessionResponse = {
+  session: Types.trainingSession,
+  traineeState: Types.traineeState,
+}
+
+let startTrainingSession = (
+  activity: string,
+  domain: string,
+  toMsg: result<startSessionResponse, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let body = Js.Json.stringifyAny({"activity": activity, "domain": domain})->Belt.Option.getExn
+    let _ = Fetch.fetchWithInit(
+      apiUrl ++ "/training/session/start",
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        ~body=Fetch.BodyInit.make(body),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok({
+        session: json["session"],
+        traineeState: json["trainee_state"],
+      })))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to start training session")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+type nextInterventionResponse =
+  | Intervention(Types.intervention)
+  | Wait(int, string)
+  | SessionComplete(string)
+
+let getNextIntervention = (
+  sessionId: string,
+  toMsg: result<nextInterventionResponse, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let _ = Fetch.fetchWithInit(
+      apiUrl ++ "/training/session/" ++ sessionId ++ "/next",
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      let response = if Js.typeof(json["intervention"]) != "undefined" {
+        Intervention(json["intervention"])
+      } else if json["session_complete"] == true {
+        SessionComplete(json["message"])
+      } else {
+        Wait(json["wait_ms"], json["message"])
+      }
+      callbacks.enqueue(toMsg(Ok(response)))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to get next intervention")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+let respondToIntervention = (
+  interventionId: string,
+  sessionId: string,
+  responseTimeMs: int,
+  toMsg: result<Types.interventionResponse, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let body = Js.Json.stringifyAny({
+      "response_time_ms": responseTimeMs,
+      "session_id": sessionId,
+    })->Belt.Option.getExn
+    let _ = Fetch.fetchWithInit(
+      apiUrl ++ "/training/intervention/" ++ interventionId ++ "/respond",
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        ~body=Fetch.BodyInit.make(body),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok({
+        outcome: json["outcome"],
+        newCompetence: json["new_competence"],
+        feedback: json["feedback"],
+      })))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to submit response")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+type endSessionResponse = {
+  session: Types.trainingSession,
+  summary: Types.sessionSummary,
+}
+
+let endTrainingSession = (
+  sessionId: string,
+  toMsg: result<endSessionResponse, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let _ = Fetch.fetchWithInit(
+      apiUrl ++ "/training/session/" ++ sessionId ++ "/end",
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok({
+        session: json["session"],
+        summary: json["summary"],
+      })))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to end session")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+let fetchCompetence = (toMsg: result<Types.competenceModel, string> => 'msg): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let _ = Fetch.fetchWithInit(
+      apiUrl ++ "/training/competence",
+      Fetch.RequestInit.make(
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok(json["competence_model"])))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to fetch competence")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
