@@ -26,6 +26,7 @@ type route =
   | Quiz(string, string)
   | Dashboard
   | Training
+  | Demo
   | Login
   | Register
   | NotFound
@@ -42,6 +43,10 @@ type model = {
   // Training state
   trainingState: Pages.Training.trainingState,
   interventionStartTime: option<float>,
+  // Demo state
+  demoState: Pages.Demo.demoState,
+  demoStartTime: option<float>,
+  demoElapsedMs: int,
 }
 
 type msg =
@@ -69,6 +74,14 @@ type msg =
   | EndTrainingSession
   | TrainingSessionEnded(result<Api.endSessionResponse, string>)
   | GotCompetence(result<Types.competenceModel, string>)
+  // Demo messages
+  | DemoStart
+  | DemoCountdownTick
+  | DemoStartChallenge
+  | DemoTimerTick
+  | DemoRespond
+  | DemoNextChallenge
+  | DemoEnd
 
 // Route parsing
 let parseRoute = (path: string): route => {
@@ -82,6 +95,7 @@ let parseRoute = (path: string): route => {
   | ["courses", courseId, "quizzes", quizId] => Quiz(courseId, quizId)
   | ["dashboard"] => Dashboard
   | ["training"] => Training
+  | ["demo"] => Demo
   | ["login"] => Login
   | ["register"] => Register
   | _ => NotFound
@@ -98,6 +112,7 @@ let routeToPath = (route: route): string => {
   | Quiz(courseId, quizId) => "/courses/" ++ courseId ++ "/quizzes/" ++ quizId
   | Dashboard => "/dashboard"
   | Training => "/training"
+  | Demo => "/demo"
   | Login => "/login"
   | Register => "/register"
   | NotFound => "/404"
@@ -129,6 +144,9 @@ let init = () => {
     error: None,
     trainingState: initialTrainingState,
     interventionStartTime: None,
+    demoState: Pages.Demo.initialDemoState,
+    demoStartTime: None,
+    demoElapsedMs: 0,
   }
 
   let cmd = switch initialRoute {
@@ -328,12 +346,116 @@ let update = (model: model, msg: msg): (model, Cmd.t<msg>) => {
 
   | GotCompetence(Error(err)) =>
     ({...model, error: Some(err), loading: false}, Cmd.none)
+
+  // Demo handlers
+  | DemoStart =>
+    let demoState = {...Pages.Demo.initialDemoState, phase: Pages.Demo.DemoCountdown(3)}
+    ({...model, demoState, demoElapsedMs: 0}, Cmd.none)
+
+  | DemoCountdownTick =>
+    switch model.demoState.phase {
+    | Pages.Demo.DemoCountdown(count) =>
+      if count <= 1 {
+        // Start the challenge
+        let (gapStart, gapEnd) = Pages.Demo.calculateGapWindow(model.demoState.currentDifficulty)
+        let demoState = {
+          ...model.demoState,
+          phase: Pages.Demo.DemoChallenge(model.demoState.currentDifficulty, gapStart, gapEnd),
+        }
+        ({...model, demoState}, Cmd.none)
+      } else {
+        let demoState = {...model.demoState, phase: Pages.Demo.DemoCountdown(count - 1)}
+        ({...model, demoState}, Cmd.none)
+      }
+    | _ => (model, Cmd.none)
+    }
+
+  | DemoStartChallenge =>
+    switch model.demoState.phase {
+    | Pages.Demo.DemoChallenge(difficulty, gapStart, gapEnd) =>
+      let startTime = performanceNow()
+      let demoState = {
+        ...model.demoState,
+        phase: Pages.Demo.DemoAwaitingResponse(startTime, difficulty, gapStart, gapEnd),
+      }
+      ({...model, demoState, demoStartTime: Some(startTime), demoElapsedMs: 0}, Cmd.none)
+    | _ => (model, Cmd.none)
+    }
+
+  | DemoTimerTick =>
+    switch (model.demoState.phase, model.demoStartTime) {
+    | (Pages.Demo.DemoAwaitingResponse(_, difficulty, gapStart, gapEnd), Some(startTime)) =>
+      let elapsed = Js.Math.floor_int(performanceNow() -. startTime)
+      let totalDuration = gapEnd + 1000
+      if elapsed >= totalDuration {
+        // Timeout - user didn't respond
+        let (outcome, message) = ("incorrect", "Timeout! You didn't respond in time.")
+        let newState = Pages.Demo.updateCompetence(model.demoState, false)
+        let demoState = {
+          ...newState,
+          phase: Pages.Demo.DemoFeedback(outcome, message, newState.competence),
+        }
+        ({...model, demoState, demoStartTime: None, demoElapsedMs: 0}, Cmd.none)
+      } else {
+        ({...model, demoElapsedMs: elapsed}, Cmd.none)
+      }
+    | _ => (model, Cmd.none)
+    }
+
+  | DemoRespond =>
+    switch (model.demoState.phase, model.demoStartTime) {
+    | (Pages.Demo.DemoAwaitingResponse(_, _difficulty, gapStart, gapEnd), Some(startTime)) =>
+      let responseTime = Js.Math.floor_int(performanceNow() -. startTime)
+      let (outcome, message) = Pages.Demo.evaluateResponse(responseTime, gapStart, gapEnd)
+      let isCorrect = outcome == "correct"
+      let newState = Pages.Demo.updateCompetence(model.demoState, isCorrect)
+      let demoState = {
+        ...newState,
+        phase: Pages.Demo.DemoFeedback(outcome, message, newState.competence),
+      }
+      ({...model, demoState, demoStartTime: None, demoElapsedMs: 0}, Cmd.none)
+    | _ => (model, Cmd.none)
+    }
+
+  | DemoNextChallenge =>
+    let (gapStart, gapEnd) = Pages.Demo.calculateGapWindow(model.demoState.currentDifficulty)
+    let demoState = {
+      ...model.demoState,
+      phase: Pages.Demo.DemoChallenge(model.demoState.currentDifficulty, gapStart, gapEnd),
+    }
+    ({...model, demoState, demoElapsedMs: 0}, Cmd.none)
+
+  | DemoEnd =>
+    let demoState = {...model.demoState, phase: Pages.Demo.DemoSummary}
+    ({...model, demoState, demoStartTime: None, demoElapsedMs: 0}, Cmd.none)
   }
 }
 
+// Interval subscription helper
+let every = (ms: int, toMsg: unit => 'msg): Sub.t<'msg> => {
+  Sub.registration(
+    "interval-" ++ Belt.Int.toString(ms),
+    callbacks => {
+      let intervalId = Js.Global.setInterval(() => {
+        callbacks.enqueue(toMsg())
+      }, ms)
+      () => Js.Global.clearInterval(intervalId)
+    },
+  )
+}
+
 // Subscriptions
-let subscriptions = (_model: model): Sub.t<msg> => {
-  Router.onUrlChange(path => UrlChanged(parseRoute(path)))
+let subscriptions = (model: model): Sub.t<msg> => {
+  let urlSub = Router.onUrlChange(path => UrlChanged(parseRoute(path)))
+
+  // Demo timer subscriptions
+  let demoSub = switch model.demoState.phase {
+  | Pages.Demo.DemoCountdown(_) => every(1000, () => DemoCountdownTick)
+  | Pages.Demo.DemoAwaitingResponse(_, _, _, _) => every(50, () => DemoTimerTick)
+  | _ => Sub.none
+  }
+
+  Sub.batch([urlSub, demoSub])
 }
 
 // View
@@ -382,6 +504,16 @@ let view = (model: model): Html.t<msg> => {
             )
           | _ => Pages.Login.view(msg => msg)
           }
+        | Demo =>
+          Pages.Demo.view(
+            model.demoState,
+            () => DemoStart,
+            () => DemoStartChallenge,
+            () => DemoRespond,
+            () => DemoNextChallenge,
+            () => DemoEnd,
+            model.demoElapsedMs,
+          )
         | Login => Pages.Login.view(msg => msg)
         | Register => Pages.Register.view(msg => msg)
         | NotFound => Pages.NotFound.view()
