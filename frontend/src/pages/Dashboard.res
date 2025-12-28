@@ -15,6 +15,7 @@ let view = (user: Main.user, enrollments: array<Types.enrollment>): Html.t<'msg>
         ]),
       ]),
       div([class'("dashboard-grid")], [
+        // My Courses card
         div([class'("dashboard-card")], [
           h3([class'("card-title")], [text("My Courses")]),
           if Belt.Array.length(enrollments) == 0 {
@@ -48,14 +49,44 @@ let view = (user: Main.user, enrollments: array<Types.enrollment>): Html.t<'msg>
             )
           },
         ]),
+
+        // Training card - new!
+        div([class'("dashboard-card training-card")], [
+          h3([class'("card-title")], [text("Skill Training")]),
+          div([class'("training-promo")], [
+            div([class'("promo-icon")], [text("🎯")]),
+            p([], [text("Develop your perception skills with adaptive training exercises.")]),
+            div([class'("training-actions")], [
+              a([href("/training"), class'("btn btn-primary")], [text("Start Training")]),
+              a([href("/demo"), class'("btn btn-outline")], [text("Try Demo")]),
+            ]),
+          ]),
+        ]),
+
+        // Recent Activity card
         div([class'("dashboard-card")], [
           h3([class'("card-title")], [text("Recent Activity")]),
-          p([class'("placeholder-text")], [text("Your recent quiz attempts and lessons will appear here.")]),
+          div([class'("activity-list")], [
+            div([class'("activity-item")], [
+              span([class'("activity-icon")], [text("📚")]),
+              span([class'("activity-text")], [text("Your training sessions will appear here")]),
+            ]),
+          ]),
+          a([href("/training"), class'("card-link")], [text("View all activity →")]),
         ]),
+
+        // Achievements card
         div([class'("dashboard-card")], [
           h3([class'("card-title")], [text("Achievements")]),
-          p([class'("placeholder-text")], [text("Your earned badges and achievements will appear here.")]),
+          div([class'("achievements-preview")], [
+            div([class'("achievement-placeholder")], [
+              span([class'("placeholder-icon")], [text("🏆")]),
+              p([], [text("Complete training sessions to earn achievements")]),
+            ]),
+          ]),
         ]),
+
+        // Statistics card
         div([class'("dashboard-card stats")], [
           h3([class'("card-title")], [text("Statistics")]),
           div([class'("stats-grid")], [
@@ -64,16 +95,16 @@ let view = (user: Main.user, enrollments: array<Types.enrollment>): Html.t<'msg>
               span([class'("stat-label")], [text("Courses")]),
             ]),
             div([class'("stat-item")], [
-              span([class'("stat-value")], [text("0")]),
+              span([class'("stat-value")], [text("—")]),
               span([class'("stat-label")], [text("Lessons")]),
             ]),
             div([class'("stat-item")], [
-              span([class'("stat-value")], [text("0")]),
-              span([class'("stat-label")], [text("Quizzes")]),
+              span([class'("stat-value")], [text("—")]),
+              span([class'("stat-label")], [text("Training Sessions")]),
             ]),
             div([class'("stat-item")], [
-              span([class'("stat-value")], [text("0")]),
-              span([class'("stat-label")], [text("Points")]),
+              span([class'("stat-value")], [text("—")]),
+              span([class'("stat-label")], [text("Competence")]),
             ]),
           ]),
         ]),

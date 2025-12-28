@@ -163,6 +163,36 @@ let register = (
   })
 }
 
+let forgotPassword = (
+  email: string,
+  toMsg: result<string, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let body = Js.Json.stringifyAny({"email": email})->Belt.Option.getExn
+    let _ = Fetch.fetchWithInit(
+      apiUrl ++ "/auth/forgot-password",
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray([("Content-Type", "application/json")]),
+        ~body=Fetch.BodyInit.make(body),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      let message = json["message"]
+      callbacks.enqueue(toMsg(Ok(message)))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to send reset email")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
 let enroll = (courseId: string, toMsg: result<Types.enrollment, string> => 'msg): Cmd.t<'msg> => {
   Cmd.call(callbacks => {
     let _ = Fetch.fetchWithInit(
@@ -405,6 +435,143 @@ let fetchCompetence = (toMsg: result<Types.competenceModel, string> => 'msg): Cm
     }, _)
     ->Js.Promise.catch(_ => {
       callbacks.enqueue(toMsg(Error("Failed to fetch competence")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+// Quiz API
+
+let fetchQuiz = (
+  courseId: string,
+  quizId: string,
+  toMsg: result<Types.quiz, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let url = apiUrl ++ "/courses/" ++ courseId ++ "/quizzes/" ++ quizId
+    let _ = Fetch.fetchWithInit(
+      url,
+      Fetch.RequestInit.make(~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()), ()),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok(json)))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to fetch quiz")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+type startAttemptResponse = {
+  attempt: Types.quizAttempt,
+  questions: array<Types.question>,
+}
+
+let startQuizAttempt = (
+  quizId: string,
+  toMsg: result<startAttemptResponse, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let url = apiUrl ++ "/quizzes/" ++ quizId ++ "/attempts/new"
+    let _ = Fetch.fetchWithInit(
+      url,
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok({
+        attempt: json["attempt"],
+        questions: json["questions"],
+      })))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to start quiz attempt")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+type submitAnswerResponse = {
+  key: string,
+  isCorrect: option<bool>,
+  pointsEarned: int,
+}
+
+let submitQuizAnswer = (
+  attemptId: string,
+  questionKey: string,
+  optionKey: option<string>,
+  toMsg: result<submitAnswerResponse, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let url = apiUrl ++ "/attempts/" ++ attemptId ++ "/submit"
+    let bodyObj = switch optionKey {
+    | Some(key) => {"question_key": questionKey, "option_key": key}
+    | None => {"question_key": questionKey, "option_key": ""}
+    }
+    let body = Js.Json.stringifyAny(bodyObj)->Belt.Option.getExn
+    let _ = Fetch.fetchWithInit(
+      url,
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        ~body=Fetch.BodyInit.make(body),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok({
+        key: json["key"],
+        isCorrect: json["is_correct"],
+        pointsEarned: json["points_earned"],
+      })))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to submit answer")))
+      Js.Promise.resolve()
+    }, _)
+  })
+}
+
+let completeQuizAttempt = (
+  attemptId: string,
+  toMsg: result<Types.quizAttempt, string> => 'msg,
+): Cmd.t<'msg> => {
+  Cmd.call(callbacks => {
+    let url = apiUrl ++ "/attempts/" ++ attemptId ++ "/complete"
+    let _ = Fetch.fetchWithInit(
+      url,
+      Fetch.RequestInit.make(
+        ~method_=Post,
+        ~headers=Fetch.HeadersInit.makeWithArray(makeHeaders()),
+        (),
+      ),
+    )
+    ->Js.Promise.then_(response => {
+      Fetch.Response.json(response)
+    }, _)
+    ->Js.Promise.then_(json => {
+      callbacks.enqueue(toMsg(Ok(json)))
+      Js.Promise.resolve()
+    }, _)
+    ->Js.Promise.catch(_ => {
+      callbacks.enqueue(toMsg(Error("Failed to complete quiz")))
       Js.Promise.resolve()
     }, _)
   })
