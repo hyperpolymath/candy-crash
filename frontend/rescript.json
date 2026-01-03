@@ -17,7 +17,7 @@
   "bs-dependencies": [
     "@rescript/react",
     "rescript-tea",
-    "cadre-router"
+    "cadre-tea-router"
   ],
   "reason": {
     "react-jsx": 4
