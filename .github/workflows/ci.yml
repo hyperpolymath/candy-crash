@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -101,7 +101,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -131,7 +131,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
@@ -143,7 +143,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4.31.9
@@ -162,7 +162,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -245,7 +245,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
 
       - name: Set up Podman
         run: |
