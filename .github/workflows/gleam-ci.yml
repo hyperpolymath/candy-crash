@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: PMPL-1.0
 # SPDX-FileCopyrightText: 2025 Hyperpolymath
 
 name: Gleam CI
@@ -32,7 +32,7 @@ jobs:
           gleam-version: '1.6.3'
 
       - name: Cache Gleam build
-        uses: actions/cache@v5
+        uses: actions/cache@v5.0.1
         with:
           path: |
             backend/build
