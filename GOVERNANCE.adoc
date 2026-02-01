@@ -2,7 +2,7 @@
 :toc: left
 :toclevels: 3
 :sectnums:
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 
 == Overview
 
