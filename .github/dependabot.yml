@@ -1,0 +1,114 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Dependabot configuration for automated dependency updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Ruby/Bundler dependencies
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "Hyperpolymath"
+    assignees:
+      - "Hyperpolymath"
+    labels:
+      - "dependencies"
+      - "ruby"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    # Group minor and patch updates together
+    groups:
+      rails:
+        patterns:
+          - "rails*"
+          - "actionpack"
+          - "actionview"
+          - "activesupport"
+          - "activerecord"
+          - "actionmailer"
+      security:
+        patterns:
+          - "devise"
+          - "pundit"
+          - "rack*"
+        update-types:
+          - "minor"
+          - "patch"
+      development:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Always allow security updates
+    allow:
+      - dependency-type: "all"
+    # Ignore major version updates for stable dependencies
+    ignore:
+      - dependency-name: "rails"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ruby"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Hyperpolymath"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
+
+  # npm/yarn dependencies (if using JavaScript)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "Hyperpolymath"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    groups:
+      bootstrap:
+        patterns:
+          - "bootstrap*"
+        update-types:
+          - "minor"
+          - "patch"
+      development:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    allow:
+      - dependency-type: "all"
+    # Ignore major version updates for core dependencies
+    ignore:
+      - dependency-name: "bootstrap"
+        update-types: ["version-update:semver-major"]

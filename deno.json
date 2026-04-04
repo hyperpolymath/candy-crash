@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window"],
+    "strict": true
+  },
+  "lint": {
+    "files": {
+      "include": ["app/assets/javascripts/**/*.js"],
+      "exclude": ["vendor/"]
+    },
+    "rules": {
+      "tags": ["recommended"],
+      "include": ["ban-untagged-todo"],
+      "exclude": ["no-unused-vars"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "include": ["app/assets/javascripts/**/*.js"],
+      "exclude": ["vendor/"]
+    },
+    "options": {
+      "useTabs": false,
+      "lineWidth": 100,
+      "indentWidth": 2,
+      "semiColons": true,
+      "singleQuote": false,
+      "proseWrap": "preserve"
+    }
+  },
+  "tasks": {
+    "check": "deno check app/assets/javascripts/**/*.js",
+    "lint": "deno lint app/assets/javascripts/",
+    "fmt": "deno fmt app/assets/javascripts/",
+    "fmt:check": "deno fmt --check app/assets/javascripts/"
+  },
+  "imports": {
+    "@std/": "https://deno.land/std@0.208.0/"
+  }
+}

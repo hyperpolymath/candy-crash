@@ -1,0 +1,132 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible.
+
+  - type: checkboxes
+    id: pre-checks
+    attributes:
+      label: Pre-submission Checks
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have read the [CONTRIBUTING.md](../CONTRIBUTING.md) guidelines
+          required: true
+        - label: This feature aligns with the PRIMROSE protocol for driving education
+          required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: I'm frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like
+      placeholder: I would like to see...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered
+      placeholder: Other approaches I've thought about...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: Which area does this feature affect?
+      options:
+        - Student Experience
+        - Instructor Tools
+        - Admin Dashboard
+        - Quiz Engine
+        - Course Management
+        - Gamification/Achievements
+        - User Authentication
+        - Performance
+        - Accessibility
+        - Security
+        - Documentation
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Nice to have
+        - Would improve experience
+        - Important for my use case
+        - Critical/Blocking
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Describe how you would use this feature
+      placeholder: As a [user type], I want to [action] so that [benefit]
+    validations:
+      required: true
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups/Examples
+      description: If applicable, add mockups, screenshots, or examples from other applications
+      placeholder: Drag and drop images or links here
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What defines this feature as "done"?
+      placeholder: |
+        - [ ] User can...
+        - [ ] System validates...
+        - [ ] Tests cover...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the feature request
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: pr-willingness
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a pull request to implement this feature
+        - label: I can help with design/mockups
+        - label: I can help with testing

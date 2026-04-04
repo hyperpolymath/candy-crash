@@ -1,0 +1,32 @@
+{
+  "name": "candy-crash-frontend",
+  "version": "1.0.0",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "suffix": ".res.js",
+  "bs-dependencies": [
+    "@rescript/react",
+    "rescript-tea",
+    "cadre-tea-router"
+  ],
+  "reason": {
+    "react-jsx": 4
+  },
+  "jsx": {
+    "version": 4,
+    "mode": "automatic"
+  },
+  "warnings": {
+    "error": "+101"
+  }
+}

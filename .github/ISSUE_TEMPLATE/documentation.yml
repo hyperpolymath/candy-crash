@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: 📖 Documentation Issue
+description: Report missing, incorrect, or unclear documentation
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve our documentation!
+
+  - type: checkboxes
+    id: pre-checks
+    attributes:
+      label: Pre-submission Checks
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have checked the latest documentation
+          required: true
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: Which documentation needs improvement?
+      options:
+        - README.md
+        - CONTRIBUTING.md
+        - SECURITY.md
+        - CODE_OF_CONDUCT.md
+        - GOVERNANCE.adoc
+        - MAINTAINERS.md
+        - CHANGELOG.md
+        - REVERSIBILITY.md
+        - API Documentation
+        - Code Comments
+        - Installation Guide
+        - User Guide
+        - Developer Guide
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      options:
+        - Missing documentation
+        - Incorrect/outdated information
+        - Unclear/confusing explanation
+        - Typo or grammar issue
+        - Broken link
+        - Missing examples
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue Description
+      description: Describe the documentation issue
+      placeholder: What's wrong or missing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where in the documentation is this issue?
+      placeholder: |
+        File: README.md
+        Section: Installation
+        Line: 42
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: How should this be fixed or improved?
+      placeholder: Proposed changes or additions
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: pr-willingness
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a pull request to fix this documentation issue

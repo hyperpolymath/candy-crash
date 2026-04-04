@@ -1,0 +1,23 @@
+{
+  "name": "@hyperpolymath/candy-crash-frontend",
+  "version": "1.0.0",
+  "exports": "./src/Main.res.js",
+  "imports": {
+    "@rescript/react": "npm:@rescript/react@0.12.0",
+    "rescript-tea": "npm:rescript-tea@0.9.0",
+    "cadre-tea-router": "npm:cadre-tea-router@1.0.0",
+    "react": "npm:react@18.2.0",
+    "react-dom": "npm:react-dom@18.2.0"
+  },
+  "tasks": {
+    "dev": "deno run -A --watch src/Main.res.js",
+    "build": "rescript build -with-deps",
+    "clean": "rescript clean",
+    "serve": "deno run -A npm:serve@14.2.0 dist"
+  },
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
+}

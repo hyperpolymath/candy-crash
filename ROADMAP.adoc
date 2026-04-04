@@ -1,0 +1,580 @@
+= Candy Crash: Roadmap and Blockers
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+
+**Practical Path Forward**
+
+toc::[]
+
+== The Honest Assessment
+
+Before any roadmap: we must acknowledge what we don't know.
+
+The entire premise of this project rests on an *unvalidated assumption*: that ambient training outside a vehicle can produce competence improvements inside a vehicle.
+
+If this assumption is false, everything else is wasted effort.
+
+Therefore, the roadmap must be structured around *validating assumptions before building systems*.
+
+== Critical Blockers
+
+These must be resolved before significant development proceeds:
+
+=== Blocker 1: Transfer Validity (Existential Risk)
+
+**The Question**: Does ambient training actually transfer to vehicle operation?
+
+**Why It's Critical**: If training gap timing while walking doesn't improve gap timing while driving, the entire system is theater. We'd be building an elaborate placebo.
+
+**What We Need**:
+- Literature review: What does existing research say about transfer in motor learning, perceptual learning, and driving specifically?
+- If literature is inconclusive: A small empirical study (n=20-30) testing whether ANY ambient training transfers to ANY measurable driving competency
+
+**Resolution Options**:
+1. Literature shows strong transfer evidence → Proceed with confidence
+2. Literature shows weak/no transfer → Either pivot the approach or design rigorous validation into MVP
+3. Literature is inconclusive → Run pilot study before major development
+
+**Owner**: Needs human factors / motor learning expertise
+
+**Estimated Effort**: 2-4 weeks literature review; 2-3 months if pilot study needed
+
+---
+
+=== Blocker 2: Competence Model (No Map, No Navigation)
+
+**The Question**: What exactly are we training?
+
+**Why It's Critical**: "Train people to drive" is not actionable. We need a concrete decomposition of driving competence into trainable units. Without this, we cannot:
+- Design interventions
+- Measure outcomes
+- Validate transfer
+- Build a competence model data structure
+
+**What We Need**:
+For ONE vehicle domain (recommend: car), produce:
+- Hierarchical skill decomposition (major skills → sub-skills → micro-skills)
+- For each micro-skill: SA level mapping (perception/comprehension/projection)
+- For each micro-skill: Ambient trainability assessment (plausible/implausible/unknown)
+- For each micro-skill: Assessment methodology (how do we know if someone has it?)
+
+**Resolution Options**:
+1. Synthesize from existing driving assessment literature (UK driving test criteria, DVSA examiner guidelines, driving instructor curricula)
+2. Interview expert driving instructors (5-10 structured interviews)
+3. Combination of both
+
+**Owner**: Needs driving instruction domain expertise + human factors expertise
+
+**Estimated Effort**: 4-8 weeks for initial car domain model
+
+---
+
+=== Blocker 3: Attention Budget Parameters
+
+**The Question**: How much cognitive load can ambient training impose?
+
+**Why It's Critical**: Without concrete numbers, the intervention planner has no constraints. We'd be guessing at:
+- Maximum interventions per hour
+- Minimum spacing between interventions
+- Cognitive cost per intervention type
+- Context-dependent limits (walking vs. sitting vs. passenger)
+
+**What We Need**:
+- Literature synthesis: What does cognitive load research say about secondary task costs?
+- Initial parameter estimates with uncertainty bounds
+- Plan for empirical calibration during pilot testing
+
+**Resolution Options**:
+1. Start with conservative literature-based estimates (err toward fewer interventions)
+2. Build in adaptive calibration (system learns individual attention limits)
+3. Accept that initial parameters will be wrong and plan for iteration
+
+**Owner**: Needs cognitive psychology / human factors expertise
+
+**Estimated Effort**: 2-3 weeks for initial literature synthesis and parameter estimates
+
+---
+
+=== Blocker 4: Minimum Viable Sensing
+
+**The Question**: What is the minimum sensor set that enables useful training?
+
+**Why It's Critical**: Sensor requirements drive:
+- Development platform choice
+- User adoption friction
+- Privacy exposure
+- System complexity
+
+**Options Under Consideration**:
+
+[cols="1,2,2,2"]
+|===
+|Option |Sensors |Pros |Cons
+
+|Smartphone Only
+|Accelerometer, GPS, microphone
+|Universal availability, low friction
+|Limited physiological insight, imprecise context
+
+|Smartphone + Wearable
+|Above + heart rate, HRV
+|Better state estimation, alertness detection
+|Requires wearable purchase, sync complexity
+
+|Full Sensor Mesh
+|Above + vehicle OBD, environmental sensors
+|Complete picture
+|High friction, complex integration, limited adoption
+|===
+
+**Recommendation**: Start with Smartphone Only. Prove value before requiring additional hardware.
+
+**What We Need**:
+- Concrete specification of what training is possible with smartphone-only sensing
+- Identification of what training is NOT possible without additional sensors
+- Decision point: is smartphone-only sufficient for MVP?
+
+**Owner**: Technical architecture decision
+
+**Estimated Effort**: 1-2 weeks analysis
+
+---
+
+=== Blocker 5: The Legacy Code
+
+**The Question**: What do we do with the existing Rails LMS?
+
+**Why It's Critical**: The codebase currently contains ~1,200 lines of Ruby code that embodies the wrong paradigm. Options:
+
+1. **Delete it now**: Clean slate, no confusion, but lose any potentially reusable infrastructure
+2. **Keep it for reference**: May cause confusion, maintenance burden
+3. **Gradual replacement**: Build new system alongside, adds complexity
+
+**Recommendation**: Delete it. The Rails code provides no value for the new paradigm. The infrastructure (CI/CD, containers, documentation framework) is worth keeping; the application code is not.
+
+**What We Need**:
+- Decision: delete or keep?
+- If delete: execution (remove app/, db/, config/, spec/, Gemfile, etc.)
+- Update documentation to reflect removed code
+
+**Owner**: Project decision
+
+**Estimated Effort**: 1 day to execute deletion
+
+---
+
+=== Blocker 6: Domain Expertise Gap
+
+**The Question**: Who builds this?
+
+**Why It's Critical**: This project requires expertise in:
+- Embodied cognition / ecological psychology
+- Human factors / cognitive ergonomics
+- Motor learning / skill acquisition
+- Driving instruction / vehicle operation
+- Real-time systems engineering (Rust)
+- Privacy-preserving system design
+
+**Current State**: Unknown. Who is available? What expertise gaps exist?
+
+**Resolution Options**:
+1. Map current team expertise (if any team exists)
+2. Identify critical gaps
+3. Either recruit expertise or scope project to available expertise
+4. Consider: is this project viable without certain expertise?
+
+**Owner**: Project leadership
+
+**Estimated Effort**: Ongoing
+
+---
+
+== Roadmap: Phased Approach
+
+Given the blockers, here is a risk-ordered roadmap:
+
+=== Phase A: Validate or Invalidate (Weeks 1-8)
+
+**Goal**: Answer the existential question before building anything substantial.
+
+==== A.1 Literature Review (Weeks 1-3)
+
+Systematic review of:
+- Transfer of training research (Thorndike onward)
+- Perceptual learning literature
+- Motor learning specificity research
+- Driving simulation training effectiveness
+- Ambient/ubiquitous computing training systems (if any exist)
+
+**Deliverable**: `docs/research/transfer-literature-review.adoc`
+
+**Decision Point**: Does literature support ambient training transfer?
+- Yes → Proceed to A.2 with confidence
+- No → Pivot or abandon
+- Inconclusive → Proceed to A.3 (pilot study)
+
+==== A.2 Competence Model Draft (Weeks 2-6)
+
+Parallel with literature review:
+
+- Obtain DVSA examiner marking criteria
+- Review UK driving test structure
+- Interview 3-5 driving instructors (if accessible)
+- Draft initial skill decomposition for car domain
+- Map each skill to SA levels
+- Assess ambient trainability for each skill
+
+**Deliverable**: `docs/competence-model/car.adoc` (draft)
+
+==== A.3 Pilot Validation Study (Weeks 4-8, if needed)
+
+Only if literature is inconclusive:
+
+- Design minimal study: one ambient training intervention, one measurable driving outcome
+- Example: "Does audio-based gap timing training while walking improve gap acceptance judgment in simulator?"
+- n=20-30 participants, within-subjects design
+- Pre-test → 2-week ambient training → post-test
+
+**Deliverable**: Study results, go/no-go decision
+
+**Decision Point**: Does pilot show transfer?
+- Yes (effect size > 0.3) → Proceed to Phase B
+- No → Pivot approach or reconsider project viability
+
+---
+
+=== Phase B: Foundation (Weeks 9-16)
+
+**Goal**: Build the minimum infrastructure for experimentation.
+
+==== B.1 Clean Repository (Week 9)
+
+- Remove Rails application code
+- Keep: CI/CD, containers, documentation, governance
+- Create new directory structure for Rust core
+
+==== B.2 Documentation Framework (Week 9-10)
+
+Create initial documentation structure:
+----
+docs/
+├── competence-model/
+├── human-factors/
+├── paradigms/
+├── hardware/
+├── privacy/
+├── ethics/
+└── architecture/
+----
+
+Populate with current thinking (even if incomplete).
+
+==== B.3 Core Intelligence Skeleton (Weeks 10-14)
+
+Minimal Rust implementation:
+
+[source,rust]
+----
+// Trainee state (simplified)
+struct TraineeState {
+    activity: Activity,      // walking, sitting, passenger, driving, sleeping
+    attention_available: f32, // 0.0 to 1.0
+    last_intervention: Option<Timestamp>,
+}
+
+// Competence model (simplified)
+struct CompetenceModel {
+    skills: HashMap<SkillId, SkillState>,
+}
+
+// Intervention planner (simplified)
+fn plan_intervention(state: &TraineeState, model: &CompetenceModel) -> Option<Intervention> {
+    // Respect attention budget
+    // Respect minimum spacing
+    // Select highest-value skill gap
+    // Return None if conditions not met (silence is valid)
+}
+----
+
+**Deliverable**: Compiling Rust crate with basic types and logic
+
+==== B.4 Smartphone Sensor Prototype (Weeks 12-16)
+
+Minimal smartphone app:
+- Activity detection (accelerometer-based: walking/sitting/vehicle)
+- Location context (home/transit/outdoor)
+- Communication with core over local network
+
+Platform: Start with Android (more accessible for prototyping) or cross-platform (Flutter/React Native with native modules).
+
+**Deliverable**: App that detects activity and sends to core
+
+---
+
+=== Phase C: Single-Skill Proof of Concept (Weeks 17-24)
+
+**Goal**: End-to-end demonstration with ONE trainable skill.
+
+==== C.1 Select Target Skill
+
+From competence model, select one micro-skill that:
+- Has plausible ambient trainability (based on literature)
+- Is measurable (clear assessment methodology)
+- Is meaningful (contributes to real driving competence)
+
+**Candidate**: Gap timing perception
+- Trainable via audio cues when pedestrian observes traffic
+- Measurable via reaction time tests or simulator assessment
+- Meaningful for junction safety
+
+==== C.2 Design Intervention
+
+For the selected skill:
+- Intervention modality (probably audio)
+- Intervention content (what does the trainee experience?)
+- Intervention timing (when does it trigger?)
+- Intervention constraints (attention budget, spacing)
+
+==== C.3 Implement End-to-End
+
+- Sensor input → State estimation → Intervention decision → Actuator output
+- All running on smartphone + local compute
+- Basic logging for outcome observation
+
+==== C.4 Self-Testing and Iteration
+
+- Team members use system for 2-4 weeks
+- Qualitative assessment: Does it feel useful? Annoying? Ignored?
+- Adjust parameters based on experience
+
+**Deliverable**: Working single-skill training system
+
+---
+
+=== Phase D: Validation Study (Weeks 25-32)
+
+**Goal**: Rigorous test of whether the system produces measurable competence gains.
+
+==== D.1 Study Design
+
+- Randomized controlled trial
+- Treatment group: Uses ambient training system
+- Control group: No ambient training (or placebo app)
+- Outcome measure: Simulator-based gap timing assessment
+- n=40-60 participants
+- Duration: 4-6 weeks of training exposure
+
+==== D.2 IRB/Ethics Approval
+
+If conducting formal research:
+- Institutional review board approval
+- Informed consent process
+- Data protection compliance
+
+==== D.3 Run Study
+
+- Recruit participants
+- Deploy system
+- Collect outcome data
+- Analyze results
+
+==== D.4 Decision Point
+
+- Positive results (p<0.05, meaningful effect size) → Proceed to Phase E
+- Null results → Diagnose why, iterate approach, or pivot
+- Negative results (system harmful) → Stop
+
+**Deliverable**: Peer-reviewable study results
+
+---
+
+=== Phase E: Expand (Weeks 33+)
+
+**Goal**: If validated, expand to more skills and modalities.
+
+- Add additional micro-skills to training library
+- Add additional modalities (haptic, visual)
+- Expand to additional vehicle domains (motorcycle, etc.)
+- Improve competence model based on validation learnings
+- Consider hybrid operation training
+
+This phase is speculative until Phase D validates the approach.
+
+---
+
+== Key Decisions Needed Now
+
+These decisions should be made before proceeding:
+
+=== Decision 1: Transfer Validation Strategy
+
+**Options**:
+1. Assume transfer based on theoretical arguments → High risk
+2. Literature review first, proceed if supportive → Moderate risk
+3. Require pilot study validation before any development → Low risk, slow
+
+**Recommendation**: Option 2. Literature review is low-cost and should be done regardless. Only proceed to pilot study if literature is inconclusive.
+
+---
+
+=== Decision 2: Initial Vehicle Domain
+
+**Options**:
+1. Car (most common, clearest licensing criteria, largest market)
+2. Motorcycle (simpler vehicle, safety-critical, enthusiast community)
+3. Multiple domains in parallel (spreads risk but multiplies effort)
+
+**Recommendation**: Option 1 (Car). Largest user base, most mature assessment criteria, most transferable learnings.
+
+---
+
+=== Decision 3: Minimum Viable Platform
+
+**Options**:
+1. Smartphone only (maximum reach, minimum sensing)
+2. Smartphone + wearable (better state estimation)
+3. Full sensor mesh (complete picture, minimal reach)
+
+**Recommendation**: Option 1 for MVP. Prove value with minimum hardware requirements.
+
+---
+
+=== Decision 4: Legacy Code Disposition
+
+**Options**:
+1. Delete Rails code now
+2. Keep for reference
+3. Gradual deprecation
+
+**Recommendation**: Option 1. The code has no value for the new paradigm and creates confusion.
+
+---
+
+=== Decision 5: Research Rigor Level
+
+**Options**:
+1. Move fast, validate informally → Ship faster, less certainty
+2. Formal validation studies → Slower, publishable, credible
+3. Hybrid (informal early, formal later) → Balance
+
+**Recommendation**: Option 3. Use informal self-testing in Phase C, formal validation in Phase D. This balances speed with eventual credibility.
+
+---
+
+== Resource Requirements
+
+=== Expertise Needed
+
+[cols="1,2,1"]
+|===
+|Expertise |Why Needed |Phase
+
+|Human factors / cognitive psychology
+|Literature review, attention modeling, study design
+|A, B, C, D
+
+|Driving instruction / vehicle operation
+|Competence model, skill decomposition, face validity
+|A, B, C
+
+|Rust systems programming
+|Core intelligence, sensor integration
+|B, C, D, E
+
+|Mobile development (Android/iOS)
+|Smartphone sensor app, intervention delivery
+|B, C, D, E
+
+|Study design / statistics
+|Validation study design and analysis
+|D
+
+|UX / interaction design
+|Intervention design, UI for configuration
+|C, D, E
+|===
+
+=== Open Source Dependencies
+
+- Rust: tokio (async), serde (serialization), sqlx (database)
+- Mobile: Platform-specific sensor APIs, audio APIs
+- Analysis: R or Python for study analysis (exception to language policy for research tooling)
+
+=== Infrastructure
+
+- Development: Local machines with Rust toolchain
+- Testing: Android devices for prototype testing
+- Validation: Access to driving simulator or on-road assessment capability (Phase D)
+
+---
+
+== Risk Register
+
+[cols="1,2,2,1"]
+|===
+|Risk |Impact |Mitigation |Likelihood
+
+|Transfer doesn't work
+|Project failure
+|Validate early (Phase A)
+|Medium
+
+|Competence model is wrong
+|Interventions don't target real skills
+|Expert review, iterative refinement
+|Medium
+
+|Attention budget miscalibrated
+|System is annoying or ineffective
+|Conservative initial params, adaptive calibration
+|High
+
+|Users habituate to interventions
+|Training becomes ineffective
+|Variation strategies, spacing optimization
+|High
+
+|Privacy concerns limit adoption
+|Low user base
+|Local-first architecture, transparency
+|Medium
+
+|Regulatory pushback
+|Cannot operate in certain markets
+|Clear separation from certification, conservative claims
+|Low
+
+|Cannot recruit domain expertise
+|Quality of competence model and validation suffers
+|Partner with driving schools, universities
+|Medium
+|===
+
+---
+
+== Immediate Next Actions
+
+1. **Decide**: Confirm decisions 1-5 above (or discuss alternatives)
+2. **Start literature review**: Assign owner, begin systematic search
+3. **Contact driving instructors**: Identify 3-5 for interviews (competence model input)
+4. **Clean repository**: Remove Rails code (if Decision 4 = delete)
+5. **Set up Rust project**: Basic crate structure for core intelligence
+
+---
+
+== Success Criteria
+
+**Phase A Success**: Clear go/no-go decision based on transfer evidence
+
+**Phase B Success**: Functional skeleton that can process sensor input and plan interventions
+
+**Phase C Success**: Single-skill system that team finds useful (subjective) and shows promise (informal observation)
+
+**Phase D Success**: Statistically significant improvement in target skill with meaningful effect size
+
+**Project Success**: Empirically validated ambient training system that produces measurable competence improvements in vehicle operation
+
+---
+
+_Validate before you build. Build only what's validated._

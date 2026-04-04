@@ -1,0 +1,503 @@
+= Candy Crash
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+
+**Total Pervasive Ambient Computing for Vehicle Operator Training**
+
+toc::[]
+
+== What This Is
+
+Candy Crash is a framework for training humans to operate vehicles—cars, motorbikes, aircraft, watercraft—through *pervasive ambient computing*.
+
+This is not an LMS. This is not e-learning. This is not a course.
+
+This is an *environmental intervention* that makes the boundaries between "training" and "living" dissolve.
+
+== The Philosophical Foundation
+
+=== The Problem with Traditional Training
+
+Traditional vehicle operator training commits a fundamental error: it treats operation as a *skill to be acquired* rather than a *way of being to be inhabited*.
+
+You sit in a classroom. You read theory. You take a test. Then, separately, you sit in a vehicle and practice. The assumption: knowledge transfers cleanly from abstraction to embodiment.
+
+This is wrong.
+
+=== Embodied Cognition and Situated Learning
+
+Cognition does not happen in the head. It happens in the dynamic coupling between organism and environment. When you drive, you do not "apply knowledge"—you *perceive-act* in a continuous loop with the vehicle and the road.
+
+The steering wheel is not a tool you use. It becomes part of your body schema. The car's boundaries become your boundaries. You do not think "turn the wheel 15 degrees"; you *flow through the curve*.
+
+This cannot be taught through abstraction. It must be *grown* through sustained environmental coupling.
+
+=== The Ambient Computing Thesis
+
+Mark Weiser wrote: "The most profound technologies are those that disappear. They weave themselves into the fabric of everyday life until they are indistinguishable from it."
+
+We apply this to training: *The most profound training is that which disappears. It weaves itself into the fabric of everyday life until learning and living are indistinguishable.*
+
+The trainee does not "study driving." The trainee *lives in an environment that continuously cultivates vehicular perception-action competence*.
+
+== What Total Pervasive Ambient Training Means
+
+=== Dissolution of the Training Boundary
+
+There is no "lesson time" and "non-lesson time." Every moment is potentially a training moment:
+
+* Walking down a street → the trainee perceives traffic patterns, timing, gaps
+* Riding as a passenger → the trainee feels acceleration, braking, cornering forces
+* Sleeping → consolidation of procedural memory continues
+* Cooking → proprioceptive calibration continues in the background
+* Sitting idle → micro-simulations present themselves
+
+The training is *always on*, but it is not intrusive. It is *ambient*—present in the environment, available when attention is available, receding when it is not.
+
+=== Multi-Modal Environmental Saturation
+
+Ambient training operates across all sensory channels and all contexts:
+
+**Haptic Layer**::
+Wearable devices that provide subtle force-feedback. Feel steering resistance while walking. Feel braking pressure while sitting. The hands and feet develop procedural memory continuously.
+
+**Audio Layer**::
+Spatial audio that trains situational awareness. Engine sounds. Tire sounds. Traffic patterns. Not as "lessons" but as environmental texture—present, informative, unobtrusive.
+
+**Visual Layer**::
+Augmented reality that overlays driving-relevant perception onto everyday scenes. Traffic flow visualization. Gap timing. Hazard prediction zones. Not replacing reality but *annotating* it.
+
+**Proprioceptive Layer**::
+Body-position awareness training. Vehicle operators must know where their body is in space. Ambient systems that occasionally prompt body-awareness micro-exercises.
+
+**Temporal Layer**::
+Learning must respect biological rhythms. Systems that detect alertness, receptivity, consolidation states. Training intensifies when the brain is receptive. Training recedes when the brain needs rest or consolidation.
+
+=== The Vehicle as Extended Phenotype
+
+The goal is not "learning to drive." The goal is *becoming a vehicle operator*—a human whose cognitive boundaries have extended to include the machine.
+
+This requires:
+
+1. **Perceptual Recalibration**: The trainee must perceive the vehicle's dimensions as their own dimensions
+2. **Procedural Embodiment**: Control inputs must become as automatic as walking
+3. **Predictive Integration**: The trainee must feel what the vehicle will do before it does it
+4. **Environmental Coupling**: The trainee must perceive the road-vehicle system as a unified dynamic field
+
+None of this can be "taught." It must be *grown* through extended environmental exposure.
+
+== Human Factors Constraints
+
+Ambient training sounds appealing in theory. But human factors research imposes hard constraints that this system must respect. Ignoring these constraints produces systems that feel clever but fail to produce competent operators.
+
+=== Attention Is Finite
+
+The vision of "training that happens everywhere" collides with a fundamental reality: *attention is a limited resource*.
+
+**Cognitive Load Theory** (Sweller)::
+Working memory has strict capacity limits. Every intervention—however "ambient"—consumes cognitive resources. Training while walking means degraded walking AND degraded training. The system cannot pretend otherwise.
+
+**Dual-Task Interference**::
+Humans cannot truly multitask on attention-demanding activities. We task-switch, and task-switching has costs. "Ambient" training during other activities is actually interleaved training with switching overhead.
+
+**Interruption Costs**::
+Research on interruptions (Mark, González) shows recovery times of 20+ minutes for complex cognitive tasks. Even subtle interventions have costs. The system must be parsimonious with interruptions.
+
+*Design Implication*: The system must model attention as a scarce resource. Interventions have a cost. The planner must weigh training benefit against attention cost and err toward restraint.
+
+=== Vigilance Degrades
+
+An "always on" system risks producing habituation rather than learning.
+
+**Vigilance Decrement**::
+Sustained attention to monotonous stimuli degrades over time—often within 20-30 minutes. A system that provides constant low-level training signals will be tuned out.
+
+**Alarm Fatigue**::
+Systems that alert too frequently produce operators who ignore alerts. This is well-documented in medical, aviation, and industrial contexts. The training system must not become noise.
+
+**Habituation**::
+Repeated exposure to stimuli without consequence produces habituation—the stimulus stops being perceived. Ambient training signals will fade into the background unless carefully managed.
+
+*Design Implication*: The system must vary its interventions, respect refractory periods, and accept that less is often more. Silence is a valid output.
+
+=== Transfer Is Not Guaranteed
+
+The plan assumes training outside the vehicle transfers to performance inside the vehicle. This assumption requires scrutiny.
+
+**Specificity of Learning**::
+Motor learning is highly context-specific. Skills trained in one context do not automatically transfer to another. Haptic feedback while walking is a different sensorimotor context than haptic feedback while steering.
+
+**Body Schema Extension**::
+The "extended phenotype" of vehicle operation develops through coupling with *the actual vehicle*. Simulated or abstracted training may not produce the same body schema integration.
+
+**The Transfer Problem**::
+Educational research consistently shows that transfer is difficult to achieve. Training in one domain often fails to improve performance in related domains. We cannot assume ambient training transfers to vehicle operation without empirical validation.
+
+*Design Implication*: The system must be honest about what ambient training can and cannot achieve. Some competencies require actual vehicle time. The system should identify which micro-skills have plausible ambient trainability and which do not.
+
+=== Situation Awareness Has Levels
+
+Operator competence is not just perception-action loops. Endsley's model identifies three levels:
+
+**Level 1 - Perception**::
+Perceiving relevant elements in the environment. Where are other vehicles? What is my speed? This is trainable through perceptual learning.
+
+**Level 2 - Comprehension**::
+Understanding what the perceived elements mean. That vehicle is approaching fast—it won't stop in time. This requires mental models that integrate perception with knowledge.
+
+**Level 3 - Projection**::
+Anticipating future states. In three seconds, that vehicle will be in my path. This requires dynamic mental simulation.
+
+Experts differ from novices primarily in Levels 2 and 3, not Level 1. Ambient training can address perceptual learning (Level 1) but must also develop comprehension and projection capabilities.
+
+*Design Implication*: The competence model must address all three SA levels. Interventions must include comprehension and projection training, not just perceptual exposure.
+
+=== Honest Constraints
+
+Given these human factors realities, the system must:
+
+1. **Model attention explicitly**: Track cognitive load, respect limits, err toward fewer interventions
+2. **Vary and space interventions**: Avoid habituation through variation and appropriate spacing
+3. **Validate transfer empirically**: Do not assume ambient training produces vehicle competence without evidence
+4. **Train comprehension and projection**: Not just perception—understanding and anticipation
+5. **Accept limitations**: Some training requires actual vehicle time. The system is a supplement, not a replacement.
+
+== Operational Paradigms
+
+Vehicle operation exists on a spectrum from full human control to full machine control. This framework must address all three paradigms, though current development focuses on manual operation.
+
+=== The Three Paradigms
+
+**Manual Operation**::
+The human is the primary controller. The vehicle provides feedback but does not intervene in control. This is the historical norm and remains dominant for motorcycles, light aircraft, most watercraft, and many road vehicles.
+
+**Hybrid Operation** (SAE Levels 1-3)::
+Human and machine share control. The machine may handle some functions (lane-keeping, adaptive cruise) while the human handles others. The human must monitor automation and intervene when needed. This is the current transitional state for many road vehicles.
+
+**Autonomous Operation** (SAE Levels 4-5)::
+The machine is the primary controller. The human is a passenger, supervisor, or fallback. This is emerging for some road vehicles in limited domains and is common for certain aviation operations (autopilot cruise).
+
+=== Why All Three Matter
+
+Each paradigm requires different competencies:
+
+[cols="1,1,1,1"]
+|===
+|Competency |Manual |Hybrid |Autonomous
+
+|Vehicle control skills
+|Primary
+|Maintained for takeover
+|Emergency only
+
+|Perceptual skills
+|Primary
+|Monitoring automation + environment
+|Optional awareness
+
+|Comprehension/projection
+|Primary
+|Understanding automation state
+|Understanding automation boundaries
+
+|Procedural memory
+|Primary
+|Takeover procedures
+|Emergency procedures
+
+|Trust calibration
+|N/A
+|Critical—when to intervene
+|Critical—when automation fails
+
+|Mode awareness
+|Minimal
+|Critical—what is automation doing?
+|Important—what can automation handle?
+|===
+
+=== Current Focus: Manual Operation
+
+This project currently focuses on **manual operation** and **current production systems**.
+
+Rationale:
+
+1. **Foundation**: Manual operation competencies are foundational. Even in automated futures, base skills matter for edge cases, failures, and takeover situations.
+
+2. **Current Reality**: Most vehicle operation today is still primarily manual. Motorcycles, light aircraft, recreational watercraft, and the majority of global road vehicles have minimal automation.
+
+3. **Validation Clarity**: Manual operation has clear competence criteria (licensing tests, incident rates). This enables cleaner validation of training effectiveness.
+
+4. **Ethical Clarity**: Training humans to operate vehicles manually is straightforwardly beneficial. Hybrid/autonomous paradigms raise more complex questions about human-machine responsibility.
+
+=== Future Exploration: Hybrid and Autonomous
+
+The framework will expand to address hybrid and autonomous operation:
+
+**Hybrid Paradigm** (Future)::
+* Monitoring skill training—sustained attention to automation state
+* Takeover readiness—rapid transition from monitoring to controlling
+* Mode awareness training—understanding automation states and transitions
+* Trust calibration—knowing when to trust and when to intervene
+* Automation boundary understanding—where does automation fail?
+
+**Autonomous Paradigm** (Future)::
+* Supervision skills for high-automation environments
+* Emergency intervention capabilities
+* System limitation awareness
+* Graceful degradation understanding
+
+These are documented in `docs/paradigms/` as the framework matures.
+
+=== Paradigm-Agnostic Architecture
+
+The core architecture (sensors, actuators, competence modeling, intervention planning) is paradigm-agnostic. What changes across paradigms:
+
+* The competence models (different skills for different paradigms)
+* The intervention libraries (different training content)
+* The assessment methodologies (different criteria for competence)
+
+The infrastructure serves all three paradigms.
+
+== Architecture Principles
+
+=== Sensor Mesh
+
+The system requires a mesh of sensors across the trainee's environment:
+
+* Wearables (hands, feet, torso)
+* Environmental sensors (home, transit, workplace)
+* Vehicle integration (when operating or riding)
+* Biometric monitoring (alertness, stress, receptivity)
+
+These sensors do not merely collect data. They *create an extended nervous system* that allows the training system to perceive the trainee's state and context.
+
+=== Actuator Mesh
+
+The system requires actuators that can modulate the trainee's environment:
+
+* Haptic feedback devices
+* Spatial audio systems
+* AR displays / smart glasses
+* Environmental lighting and sound
+* Vehicle integration systems
+
+These actuators do not merely "present lessons." They *modulate the environment* to create learning-optimal conditions.
+
+=== The Training Intelligence
+
+At the center: an intelligence that:
+
+* Perceives the trainee's current state (biometric, contextual, historical)
+* Models the trainee's current competence landscape
+* Identifies optimal micro-interventions
+* Delivers those interventions through the actuator mesh
+* Observes results and updates the competence model
+
+This is not "adaptive learning" in the LMS sense. This is *continuous environmental modulation* in service of competence development.
+
+=== Privacy and Sovereignty
+
+Total ambient computing raises profound privacy questions. The trainee must remain *sovereign*:
+
+* All data remains under trainee control
+* Training can be paused, modified, or terminated at will
+* No data leaves the trainee's personal compute environment without explicit consent
+* The system serves the trainee; the trainee does not serve the system
+
+== Vehicle Domains
+
+The framework is domain-agnostic but implementation is domain-specific:
+
+=== Ground Vehicles (Cars, Trucks)
+
+Focus areas:
+* Traffic flow perception
+* Gap judgment
+* Speed-distance calibration
+* Mirror-signal-maneuver proceduralization
+* Hazard prediction
+* Low-grip handling intuition
+
+=== Two-Wheeled Vehicles (Motorbikes, Bicycles)
+
+Focus areas:
+* Balance and countersteering intuition
+* Lean angle perception
+* Road surface reading
+* Visibility and conspicuity awareness
+* Target fixation prevention
+* Emergency braking procedure
+
+=== Aircraft
+
+Focus areas:
+* Three-dimensional spatial orientation
+* Instrument scan patterns
+* Procedure memorization and chunking
+* Decision-making under uncertainty
+* Physiological state management
+* Multi-crew coordination patterns
+
+=== Watercraft
+
+Focus areas:
+* Momentum and inertia intuition
+* Weather and water reading
+* Navigation pattern development
+* Emergency procedure embodiment
+* Communication protocol proceduralization
+
+== What Must Be Built
+
+=== Phase 0: Conceptual Foundation
+
+Before any code is written:
+
+* Define the competence model for each vehicle domain
+* Map the perception-action loops that constitute skilled operation
+* Identify the micro-skills that can be trained ambiently
+* Design the sensor/actuator requirements
+* Establish privacy architecture
+* Create the ethical framework
+
+=== Phase 1: Core Intelligence
+
+* Trainee state perception system
+* Competence modeling framework
+* Intervention planning engine
+* Outcome observation system
+* Model update loop
+
+=== Phase 2: Sensor Integration
+
+* Wearable device protocols
+* Environmental sensor protocols
+* Vehicle integration protocols
+* Biometric monitoring integration
+* Context inference engine
+
+=== Phase 3: Actuator Integration
+
+* Haptic feedback protocols
+* Spatial audio rendering
+* AR overlay system
+* Environmental modulation protocols
+* Vehicle integration for active training
+
+=== Phase 4: Domain-Specific Training Modules
+
+For each vehicle domain:
+* Competence decomposition
+* Micro-intervention library
+* Assessment methodology
+* Progression modeling
+
+=== Phase 5: Validation
+
+* Effectiveness studies
+* Safety validation
+* Long-term outcome tracking
+* Ethical review
+
+== Current State
+
+The repository currently contains remnants of an earlier approach—a conventional LMS for driving theory. This approach was fundamentally misguided.
+
+The existing Rails application, database schema, and quiz engine represent the *wrong paradigm*. They assume training is "content delivery" rather than "environmental cultivation."
+
+This must be rebuilt from first principles.
+
+See link:./ROADMAP.adoc[ROADMAP.adoc] for the practical path forward, including blockers and key decisions.
+
+== Technology Direction
+
+Given the RSR compliance requirements and the nature of the system:
+
+**Core Runtime**: Rust
+* Systems-level performance for real-time sensor/actuator loops
+* Memory safety for safety-critical systems
+* Embedded deployment capability
+
+**User Interfaces**: ReScript
+* Type-safe web interfaces for configuration and monitoring
+* Compilation to efficient JavaScript
+* Functional paradigm matches the declarative nature of UI
+
+**Formal Verification**: SPARK/Ada
+* Safety-critical components require formal verification
+* Proof of absence of runtime errors
+* Required for aviation and medical-adjacent systems
+
+**ML/Inference**: Rust with WASM
+* Competence modeling and intervention planning
+* Must run on-device for privacy
+* WASM for portable deployment
+
+== The Name
+
+"Candy Crash" is intentional provocation.
+
+The name evokes the dopamine-driven, attention-capturing design of mobile games. This system takes that same environmental-saturation approach but redirects it toward genuine human capability development.
+
+Instead of capturing attention to extract value, we saturate the environment to cultivate competence.
+
+The crash is what we prevent.
+
+== Contributing
+
+This project requires contributors who understand:
+
+* Embodied cognition and ecological psychology
+* Pervasive/ubiquitous computing architectures
+* Real-time systems engineering
+* Human factors and ergonomics
+* The specific vehicle domains being addressed
+* Privacy-preserving system design
+
+See link:./CONTRIBUTING.adoc[CONTRIBUTING.adoc].
+
+== License
+
+GPL-3.0-or-later
+
+The system that trains humans to operate vehicles must remain free. No entity should be able to enclose and privatize the cultivation of human capability.
+
+== References
+
+=== Foundational Theory
+
+* Weiser, M. (1991). The Computer for the 21st Century. Scientific American.
+* Gibson, J.J. (1979). The Ecological Approach to Visual Perception.
+* Clark, A. & Chalmers, D. (1998). The Extended Mind.
+* Dreyfus, H. (1972). What Computers Can't Do.
+* Varela, F., Thompson, E., & Rosch, E. (1991). The Embodied Mind.
+* Lave, J. & Wenger, E. (1991). Situated Learning: Legitimate Peripheral Participation.
+
+=== Human Factors and Cognitive Ergonomics
+
+* Endsley, M.R. (1995). Toward a Theory of Situation Awareness in Dynamic Systems. Human Factors.
+* Sweller, J. (1988). Cognitive Load During Problem Solving. Cognitive Science.
+* Wickens, C.D. (2008). Multiple Resources and Mental Workload. Human Factors.
+* Mark, G., Gudith, D., & Klocke, U. (2008). The Cost of Interrupted Work. CHI.
+* Parasuraman, R. & Riley, V. (1997). Humans and Automation: Use, Misuse, Disuse, Abuse. Human Factors.
+
+=== Motor Learning and Transfer
+
+* Schmidt, R.A. & Lee, T.D. (2011). Motor Control and Learning: A Behavioral Emphasis.
+* Thorndike, E.L. & Woodworth, R.S. (1901). The Influence of Improvement in One Mental Function upon the Efficiency of Other Functions.
+* Barnett, S.M. & Ceci, S.J. (2002). When and Where Do We Apply What We Learn? Psychological Bulletin.
+
+=== Vehicle Operation and Automation
+
+* SAE International (2021). J3016: Taxonomy and Definitions for Terms Related to Driving Automation Systems.
+* Bainbridge, L. (1983). Ironies of Automation. Automatica.
+* Casner, S.M., Hutchins, E.L., & Norman, D. (2016). The Challenges of Partially Automated Driving. Communications of the ACM.
+* Stanton, N.A. & Young, M.S. (1998). Vehicle Automation and Driving Performance. Ergonomics.
+
+---
+
+_The training that disappears into life itself._

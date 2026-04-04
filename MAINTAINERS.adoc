@@ -1,0 +1,148 @@
+= Maintainers
+
+This document lists the maintainers of the Candy Crash project and their areas of responsibility.
+
+== Current Maintainers
+
+=== Project Lead
+
+*Name*: [Your Name]
+
+* *GitHub*: link:https://github.com/Hyperpolymath[@Hyperpolymath]
+* *Email*: maintainer@candycrash.example.com
+* *Responsibilities*: Overall project direction, architecture decisions, release management
+* *Timezone*: UTC/London
+* *Availability*: Best responses during UK business hours
+
+=== Areas of Responsibility
+
+==== Core Backend (Rails/Ruby)
+
+* *Lead*: [Your Name]
+* *Focus*: Models, controllers, business logic, database design
+* *Review Priority*: Critical path features, security-sensitive code
+
+==== Frontend (Bootstrap/ERB)
+
+* *Lead*: [Your Name / Community]
+* *Focus*: Views, JavaScript, UI/UX, accessibility
+* *Review Priority*: User-facing features, responsive design
+
+==== DevOps & Infrastructure
+
+* *Lead*: [Your Name / Community]
+* *Focus*: CI/CD, deployment, monitoring, performance
+* *Review Priority*: Build system, deployment scripts, configuration
+
+==== Security
+
+* *Lead*: [Your Name]
+* *Focus*: Authentication, authorization, vulnerability management
+* *Review Priority*: Security patches, Devise configuration, Pundit policies
+* *Security Contact*: security@candycrash.example.com
+
+==== Documentation
+
+* *Lead*: [Community]
+* *Focus*: README, guides, API docs, tutorials
+* *Review Priority*: Documentation accuracy, clarity, completeness
+
+==== Testing & Quality Assurance
+
+* *Lead*: [Community]
+* *Focus*: RSpec tests, coverage, integration tests
+* *Review Priority*: Test coverage, edge cases, regression tests
+
+== Emeritus Maintainers
+
+(List of past maintainers who have stepped down but contributed significantly)
+
+None yet - this is a new project!
+
+== Becoming a Maintainer
+
+We welcome new maintainers! The path to maintainership:
+
+. *Contribute regularly* - Demonstrate sustained, quality contributions over 3-6 months
+. *Show expertise* - Deep knowledge in a specific area (backend, frontend, security, etc.)
+. *Community engagement* - Help others, review PRs, participate in discussions
+. *Alignment* - Demonstrate alignment with project values and coding standards
+. *Nomination* - Current maintainer nominates you, other maintainers vote
+
+=== Maintainer Expectations
+
+* *Response time*: Respond to assigned issues/PRs within 7 days
+* *Code review*: Review PRs in your area of expertise
+* *Communication*: Participate in maintainer discussions
+* *Availability*: Commit to at least 4-8 hours/month
+* *Conduct*: Follow and enforce Code of Conduct
+
+=== Maintainer Privileges
+
+* Write access to repository
+* Ability to merge PRs
+* Voting rights on project decisions
+* Recognition in project documentation
+* Listed in this MAINTAINERS.adoc file
+
+== Decision Making
+
+=== Minor Decisions
+
+* Code style, small refactors, documentation updates
+* *Process*: Single maintainer approval
+
+=== Major Decisions
+
+* Architecture changes, new dependencies, breaking changes
+* *Process*: Majority vote among active maintainers (lazy consensus)
+* *Timeline*: 7 days for discussion before vote
+
+=== Critical Decisions
+
+* License changes, project governance, CoC violations
+* *Process*: Unanimous consent among all maintainers
+* *Timeline*: 14 days minimum discussion period
+
+== Communication Channels
+
+=== Public
+
+* *GitHub Issues*: Bug reports, feature requests
+* *GitHub Discussions*: Q&A, ideas, general discussion
+* *Pull Requests*: Code review, technical discussion
+
+=== Private (Maintainers Only)
+
+* *Email*: maintainers@candycrash.example.com
+* *Security*: security@candycrash.example.com
+
+== Meeting Schedule
+
+Currently ad-hoc as project grows. Future plans:
+
+* *Monthly sync*: First Monday of month, 18:00 UTC
+* *Quarterly planning*: Roadmap review and planning
+* *Annual retrospective*: Year in review, goal setting
+
+== Stepping Down
+
+Maintainers can step down at any time by:
+
+. Notifying other maintainers via email
+. Creating PR to move themselves to "Emeritus" section
+. Ensuring knowledge transfer for critical areas
+. (Optional) Identifying potential successor
+
+== Contact
+
+For maintainer-related inquiries:
+
+* *General*: Use GitHub Discussions
+* *Private*: maintainers@candycrash.example.com
+* *Security*: security@candycrash.example.com
+* *CoC violations*: conduct@candycrash.example.com
+
+---
+
+Last updated: 2025-01-22

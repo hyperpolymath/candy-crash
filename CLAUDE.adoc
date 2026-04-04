@@ -1,0 +1,172 @@
+= CLAUDE.adoc
+
+== Project Overview
+
+*candy-crash* is a driving licence preparation course application based on the PRIMROSE protocol. This is a Ruby on Rails web application designed to help students prepare for their driving licence examinations.
+
+== Technology Stack
+
+* *Framework*: Ruby on Rails
+* *Frontend*: HTML/CSS/JavaScript (likely with Rails asset pipeline)
+* *Database*: SQLite (development), configurable for production
+* *Package Management*: Bundler (Ruby gems), potentially Yarn/npm (JavaScript assets)
+
+== Project Structure
+
+This is a standard Rails application following the MVC (Model-View-Controller) pattern:
+
+----
+/app          - Application code (models, views, controllers)
+/config       - Configuration files
+/db           - Database schemas and migrations
+/lib          - Extended modules and libraries
+/log          - Application logs
+/public       - Static files and compiled assets
+/spec or /test - Test files
+/tmp          - Temporary files
+/vendor       - Third-party code
+----
+
+== Development Setup
+
+=== Prerequisites
+
+* Ruby (check `.ruby-version` if present for specific version)
+* Bundler gem
+* SQLite3
+* Node.js and Yarn (for asset management)
+
+=== Getting Started
+
+[source,bash]
+----
+# Install dependencies
+bundle install
+
+# Set up the database
+rails db:setup
+rails db:migrate
+
+# Start the development server
+rails server
+----
+
+== PRIMROSE Protocol
+
+The application is based on the PRIMROSE protocol for driving licence preparation. When working on features:
+
+* Understand that this protocol may define specific learning paths, assessment criteria, or teaching methodologies
+* Maintain consistency with PRIMROSE standards when implementing new features
+* Document any PRIMROSE-specific logic clearly
+
+== Coding Conventions
+
+=== Ruby/Rails Best Practices
+
+* Follow Ruby Style Guide and Rails conventions
+* Use meaningful variable and method names
+* Keep controllers thin, models fat
+* Use service objects for complex business logic
+* Write self-documenting code with comments for complex logic
+
+=== Security Considerations
+
+* Never commit secrets or API keys (`.env` file is gitignored)
+* Use strong parameters in controllers
+* Validate and sanitize user input
+* Use Rails security features (CSRF protection, SQL injection prevention)
+
+== Database
+
+* Development and test environments use SQLite
+* Migrations are located in `/db/migrate`
+* Seeds for sample data should go in `/db/seeds.rb`
+* Always create migrations for schema changes (`rails generate migration`)
+
+== Testing
+
+* Write tests for new features and bug fixes
+* Run the test suite before committing: `rails test` or `rspec` (depending on test framework)
+* Maintain good test coverage for models, controllers, and critical business logic
+
+== Asset Pipeline
+
+* JavaScript assets may be in `/app/assets/javascripts` or `/app/javascript` (Webpacker)
+* Stylesheets in `/app/assets/stylesheets`
+* Precompile assets for production: `rails assets:precompile`
+
+== Common Tasks
+
+=== Creating a New Feature
+
+[source,bash]
+----
+# Generate a model
+rails generate model ModelName attribute:type
+
+# Generate a controller
+rails generate controller ControllerName action1 action2
+
+# Generate a scaffold (model, controller, views)
+rails generate scaffold ModelName attribute:type
+----
+
+=== Database Operations
+
+[source,bash]
+----
+# Create a migration
+rails generate migration MigrationName
+
+# Run migrations
+rails db:migrate
+
+# Rollback last migration
+rails db:rollback
+
+# Reset database
+rails db:reset
+----
+
+== Working with Claude Code
+
+When working on this project with Claude:
+
+. *Context*: Always mention if you're working on student features, exam features, or administrative features
+. *Migrations*: Always review generated migrations before running them
+. *Routes*: Check `config/routes.rb` to understand application routing
+. *Models*: Review model relationships and validations in `/app/models`
+. *Controllers*: Keep controller actions RESTful when possible
+
+== Key Areas to Explore
+
+* `/config/routes.rb` - Application routing
+* `/app/models` - Data models and business logic
+* `/app/controllers` - Request handling
+* `/app/views` - Templates and UI
+* `/db/schema.rb` - Current database structure
+
+== Questions to Ask
+
+When implementing features, consider:
+
+* Does this align with the PRIMROSE protocol?
+* Are there security implications?
+* Is this RESTful?
+* Does this need authentication/authorization?
+* Should this be tested?
+* Does this require a database migration?
+
+== Resources
+
+* link:https://guides.rubyonrails.org/[Ruby on Rails Guides]
+* link:https://rubystyle.guide/[Ruby Style Guide]
+* Project README: See `README.adoc` for project-specific information
+
+== Notes for AI Assistants
+
+* This is an educational application focused on driving licence preparation
+* Student data should be handled with appropriate privacy considerations
+* The PRIMROSE protocol may have specific requirements - ask for clarification when needed
+* Prioritize code quality, security, and maintainability
+* Follow Rails conventions unless there's a good reason to deviate

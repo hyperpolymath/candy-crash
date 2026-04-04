@@ -1,0 +1,380 @@
+// SPDX-FileCopyrightText: 2024 Candy Crash Contributors
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+= Training Loop Architecture
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+
+**Core Intelligence Loop for Ambient Vehicle Operator Training**
+
+toc::[]
+
+== Overview
+
+The training loop is the central intelligence of the Candy Crash system. It continuously:
+
+1. **Senses** the trainee's current state
+2. **Models** their competence across micro-skills
+3. **Plans** optimal interventions (or deliberate silence)
+4. **Acts** by delivering training stimuli
+5. **Observes** the trainee's response
+6. **Learns** by updating the competence model
+
+This document defines the architecture for the Minimum Viable Training Loop (MVTL).
+
+== Core Concepts
+
+=== Trainee State
+
+The system's perception of the trainee at any moment:
+
+[source]
+----
+TraineeState {
+    activity: Activity,        // walking | sitting | passenger | driving | sleeping
+    attention: AttentionLevel, // available | partial | unavailable
+    last_intervention: Option<Timestamp>,
+    session_intervention_count: Int,
+}
+
+Activity = Walking | Sitting | Passenger | Driving | Sleeping | Unknown
+
+AttentionLevel = Available | Partial | Unavailable
+----
+
+=== Micro-Skill
+
+The smallest trainable unit of competence:
+
+[source]
+----
+MicroSkill {
+    id: SkillId,
+    name: String,
+    domain: VehicleDomain,           // car | motorcycle | aircraft | watercraft
+    sa_level: SALevel,               // perception | comprehension | projection
+    ambient_trainable: Bool,         // can be trained outside vehicle?
+    modalities: List<Modality>,      // audio | visual | haptic
+}
+
+SALevel = Perception | Comprehension | Projection
+----
+
+=== Competence Model
+
+The trainee's estimated ability across all tracked skills:
+
+[source]
+----
+CompetenceModel {
+    trainee_id: TraineeId,
+    skills: Map<SkillId, SkillState>,
+}
+
+SkillState {
+    competence: Float,      // 0.0 (none) to 1.0 (mastery)
+    confidence: Float,      // 0.0 (unknown) to 1.0 (certain)
+    last_trained: Option<Timestamp>,
+    last_assessed: Option<Timestamp>,
+    attempt_count: Int,
+    success_count: Int,
+}
+----
+
+=== Intervention
+
+A training stimulus delivered to the trainee:
+
+[source]
+----
+Intervention {
+    id: InterventionId,
+    target_skill: SkillId,
+    modality: Modality,
+    difficulty: Float,        // 0.0 (easy) to 1.0 (hard)
+    content: InterventionContent,
+    expected_duration_ms: Int,
+}
+
+Modality = Audio | Visual | Haptic
+
+InterventionContent =
+    | GapTiming { gap_duration_ms: Int }
+    | HazardPrediction { scenario: String }
+    | MirrorCheck { direction: Direction }
+    | SpeedEstimation { actual_speed: Int }
+----
+
+=== Training Session
+
+A bounded period of active training:
+
+[source]
+----
+TrainingSession {
+    id: SessionId,
+    trainee_id: TraineeId,
+    started_at: Timestamp,
+    ended_at: Option<Timestamp>,
+    interventions: List<InterventionResult>,
+    initial_state: TraineeState,
+}
+
+InterventionResult {
+    intervention: Intervention,
+    delivered_at: Timestamp,
+    response: Option<TraineeResponse>,
+    response_time_ms: Option<Int>,
+    outcome: Outcome,
+}
+
+Outcome = Correct | Incorrect | Timeout | Skipped
+----
+
+== The Training Loop
+
+=== Loop Phases
+
+[source]
+----
+loop {
+    // Phase 1: SENSE
+    state = sense_trainee_state(sensors)
+
+    // Phase 2: EVALUATE
+    if !is_trainable_moment(state, attention_budget) {
+        wait(poll_interval)
+        continue
+    }
+
+    // Phase 3: SELECT
+    skill = select_highest_value_skill(competence_model, state)
+    if skill == None {
+        wait(poll_interval)
+        continue
+    }
+
+    // Phase 4: PLAN
+    intervention = plan_intervention(skill, state, difficulty_curve)
+
+    // Phase 5: ACT
+    deliver_intervention(intervention)
+
+    // Phase 6: OBSERVE
+    response = await_response(intervention, timeout)
+
+    // Phase 7: LEARN
+    update_competence_model(skill, response)
+
+    // Phase 8: RECORD
+    record_intervention_result(session, intervention, response)
+}
+----
+
+=== Attention Budget
+
+The system respects cognitive limits:
+
+[source]
+----
+AttentionBudget {
+    max_interventions_per_hour: Int,       // Default: 12
+    min_spacing_seconds: Int,              // Default: 180 (3 minutes)
+    context_multipliers: Map<Activity, Float>,
+}
+
+// Context affects available attention:
+// - Walking: 0.6 (divided attention)
+// - Sitting: 1.0 (full attention available)
+// - Passenger: 0.8 (somewhat available)
+// - Driving: 0.0 (never interrupt)
+// - Sleeping: 0.0 (never interrupt)
+----
+
+=== Skill Selection Algorithm
+
+Prioritize skills that maximize learning value:
+
+[source]
+----
+fn select_highest_value_skill(model, state) -> Option<SkillId> {
+    skills = model.skills
+        .filter(|s| s.ambient_trainable)
+        .filter(|s| s.modality compatible with state.activity)
+        .filter(|s| !recently_trained(s, min_spacing))
+        .sort_by(|s| learning_value(s))
+
+    return skills.first()
+}
+
+fn learning_value(skill_state) -> Float {
+    // High value = low competence + high confidence gap + time since training
+    competence_gap = 1.0 - skill_state.competence
+    staleness = time_since(skill_state.last_trained)
+    confidence_weight = 1.0 - skill_state.confidence
+
+    return competence_gap * staleness_factor(staleness) * confidence_weight
+}
+----
+
+=== Difficulty Adaptation
+
+Interventions adapt to trainee competence:
+
+[source]
+----
+fn calculate_difficulty(skill_state) -> Float {
+    // Target ~70% success rate for optimal learning
+    // Adjust difficulty to maintain this zone
+
+    base = skill_state.competence
+
+    // If succeeding too much, increase difficulty
+    success_rate = skill_state.success_count / skill_state.attempt_count
+    if success_rate > 0.85 {
+        return min(1.0, base + 0.1)
+    }
+
+    // If failing too much, decrease difficulty
+    if success_rate < 0.55 {
+        return max(0.0, base - 0.1)
+    }
+
+    return base
+}
+----
+
+== Minimum Viable Training Loop (Runnable Slice)
+
+=== Scope
+
+For the initial implementation, we implement ONE micro-skill:
+
+**Gap Timing Perception** (Car Domain)
+
+- SA Level: Perception
+- Modality: Audio
+- Ambient Trainable: Yes
+- Description: The ability to perceive and judge time gaps in traffic flow
+
+=== How It Works
+
+1. System detects trainee is walking (via activity sensing simulation)
+2. System plays audio representing approaching traffic
+3. Trainee presses button when they perceive a safe gap
+4. System evaluates if the response was within acceptable timing
+5. Competence model updates based on result
+
+=== Intervention Content
+
+[source]
+----
+GapTimingIntervention {
+    // Audio: Sound of car approaching and passing
+    approach_duration_ms: Int,    // How long the "car" approaches
+    gap_start_ms: Int,            // When the safe gap begins
+    gap_end_ms: Int,              // When the safe gap ends
+    difficulty: Float,            // Shorter gaps = higher difficulty
+}
+
+// Success criteria:
+// - Trainee responds within gap window: CORRECT
+// - Trainee responds before gap: INCORRECT (too early)
+// - Trainee responds after gap: INCORRECT (too late)
+// - Trainee doesn't respond: TIMEOUT
+----
+
+=== API Endpoints
+
+[source]
+----
+POST /api/training/session/start
+  -> { session_id, trainee_state }
+
+GET /api/training/session/:id/state
+  -> { session, competence_model, next_intervention_available_in_ms }
+
+POST /api/training/session/:id/next
+  -> { intervention } | { wait_ms } | { session_complete }
+
+POST /api/training/intervention/:id/respond
+  Body: { response_time_ms }
+  -> { outcome, new_competence, feedback }
+
+POST /api/training/session/:id/end
+  -> { session_summary, competence_delta }
+----
+
+== Data Flow
+
+[source]
+----
+┌─────────────────────────────────────────────────────────────────┐
+│                         TRAINING LOOP                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐  │
+│   │  SENSE  │────▶│  MODEL  │────▶│  PLAN   │────▶│   ACT   │  │
+│   └─────────┘     └─────────┘     └─────────┘     └─────────┘  │
+│        ▲                                               │        │
+│        │                                               ▼        │
+│   ┌─────────┐                                    ┌─────────┐   │
+│   │  LEARN  │◀───────────────────────────────────│ OBSERVE │   │
+│   └─────────┘                                    └─────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+Sense:   Activity detection, attention estimation
+Model:   Competence model lookup/update
+Plan:    Skill selection, difficulty calculation
+Act:     Intervention delivery (audio cue)
+Observe: Response collection, timing measurement
+Learn:   Bayesian competence update
+----
+
+== Success Metrics
+
+=== Per-Session Metrics
+
+- Interventions delivered
+- Response rate (non-timeout)
+- Accuracy rate
+- Average response time
+- Competence delta
+
+=== Long-Term Metrics
+
+- Competence trajectory over time
+- Skill mastery count
+- Training consistency (sessions per week)
+- Transfer validation (when available)
+
+== Future Extensions
+
+=== Phase 2: Multi-Skill
+
+- Add mirror check habituation
+- Add hazard prediction
+- Add speed estimation
+
+=== Phase 3: Multi-Modal
+
+- Haptic interventions (vibration patterns)
+- Visual interventions (AR overlay)
+
+=== Phase 4: Sensor Integration
+
+- Real accelerometer data
+- Heart rate for stress detection
+- GPS for location context
+
+=== Phase 5: Cross-Domain
+
+- Motorcycle-specific skills
+- Aircraft-specific skills
+- Watercraft-specific skills
+
+---
+
+_Train the perception. The action will follow._

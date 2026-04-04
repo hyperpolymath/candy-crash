@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Git pre-push hook for Candy Crash
+# Thin wrapper that delegates to Just recipes
+#
+# Installation:
+#   ./.githooks/install.sh
+
+set -e
+
+# Skip in CI
+if [ -n "$CI" ]; then
+    exit 0
+fi
+
+# Check if Just is installed
+if ! command -v just &> /dev/null; then
+    echo "⚠️  Just not installed - install with: cargo install just"
+    echo "    Or visit: https://github.com/casey/just#installation"
+    echo ""
+    echo "Skipping pre-push checks (not blocking)"
+    exit 0
+fi
+
+# Warn if pushing to main/master
+while read local_ref local_sha remote_ref remote_sha
+do
+    if [[ "$remote_ref" =~ refs/heads/(main|master) ]] && [ "$local_sha" != "0000000000000000000000000000000000000000" ]; then
+        echo "⚠️  Pushing to $remote_ref - ensure you have approval!"
+        read -p "Are you sure? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "❌ Push aborted"
+            exit 1
+        fi
+    fi
+done
+
+# Run pre-push checks via Just
+just pre-push-checks

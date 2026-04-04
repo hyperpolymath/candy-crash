@@ -1,0 +1,269 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, 'claude/*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/candy_crash_test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.6
+          bundler-cache: true
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v1.x
+
+      - name: Install dependencies
+        run: |
+          bundle install
+
+      - name: Setup database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
+
+      - name: Run tests with coverage
+        run: COVERAGE=true bundle exec rspec --format documentation
+        env:
+          COVERAGE: true
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.6
+          bundler-cache: true
+
+      - name: Run RuboCop
+        run: bundle exec rubocop --parallel
+
+      - name: Run Brakeman (Security)
+        run: |
+          gem install brakeman
+          brakeman --run-all-checks --exit-on-warn
+
+      - name: Run Bundler Audit
+        run: |
+          gem install bundler-audit
+          bundle audit check --update
+
+  build:
+    name: Build Assets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.6
+          bundler-cache: true
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v1.x
+
+      - name: Install dependencies
+        run: |
+          bundle install
+
+      - name: Precompile assets
+        run: bin/rails assets:precompile
+        env:
+          RAILS_ENV: production
+          SECRET_KEY_BASE: dummy_secret_for_asset_compilation
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@6624720a57d4c312633c7b953db2f2da5bcb4c3a # v3.31.9
+        with:
+          languages: ruby, javascript
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4.31.9
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@6624720a57d4c312633c7b953db2f2da5bcb4c3a # v3.31.9
+
+  rsr-validation:
+    name: RSR Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.6
+          bundler-cache: true
+
+      - name: Check documentation files
+        run: |
+          echo "📚 Validating RSR documentation requirements..."
+          required_docs=(
+            "LICENSE.txt"
+            "SECURITY.md"
+            "CONTRIBUTING.adoc"
+            "CODE_OF_CONDUCT.adoc"
+            "MAINTAINERS.adoc"
+            "CHANGELOG.adoc"
+            "FUNDING.yml"
+            "GOVERNANCE.adoc"
+            "REVERSIBILITY.adoc"
+            ".gitignore"
+            ".gitattributes"
+          )
+          missing=0
+          for doc in "${required_docs[@]}"; do
+            if [ ! -f "$doc" ]; then
+              echo "❌ Missing: $doc"
+              missing=1
+            else
+              echo "✅ $doc"
+            fi
+          done
+          if [ $missing -eq 1 ]; then
+            exit 1
+          fi
+
+      - name: Check .well-known files
+        run: |
+          echo "📁 Validating .well-known directory..."
+          wellknown_files=(
+            "public/.well-known/security.txt"
+            "public/.well-known/ai.txt"
+            "public/.well-known/humans.txt"
+            "public/.well-known/consent-required.txt"
+            "public/.well-known/provenance.json"
+          )
+          missing=0
+          for file in "${wellknown_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing: $file"
+              missing=1
+            else
+              echo "✅ $file"
+            fi
+          done
+          if [ $missing -eq 1 ]; then
+            exit 1
+          fi
+
+      - name: Validate SPDX headers
+        run: |
+          echo "📝 Checking SPDX headers in Ruby files..."
+          missing=0
+          for file in $(find app lib config -name "*.rb" 2>/dev/null | head -50); do
+            if ! grep -q "SPDX-License-Identifier" "$file"; then
+              echo "❌ Missing SPDX header: $file"
+              missing=1
+            fi
+          done
+          if [ $missing -eq 0 ]; then
+            echo "✅ All checked files have SPDX headers"
+          else
+            echo "⚠️  Some files missing SPDX headers"
+            exit 1
+          fi
+
+  container-build:
+    name: Build Container Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up Podman
+        run: |
+          # Ubuntu 22.04+ has Podman in default repos
+          sudo apt-get update
+          sudo apt-get -y install podman
+
+      - name: Build Podman image
+        run: |
+          podman build -t candy-crash:test -f Containerfile .
+
+      - name: Test container
+        run: |
+          podman run --rm candy-crash:test bundle --version
+          echo "✅ Container builds and runs successfully"
+
+      - name: Inspect image
+        run: |
+          podman inspect candy-crash:test | jq '.[0].Config.User'
+          echo "✅ Container inspection complete"

@@ -1,0 +1,36 @@
+= candy-crash - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{candy-crash_2025,
+  author = {Polymath, Hyper},
+  title = {candy-crash},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/candy-crash},
+  license = {PMPL-1.0-or-later}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _candy-crash_ [Computer software]. Available at: https://github.com/hyperpolymath/candy-crash
+
+== OSCOLA
+
+Hyper Polymath, 'candy-crash' (2025) <https://github.com/hyperpolymath/candy-crash>
+
+== MLA
+
+Polymath, Hyper. "candy-crash." 2025, github.com/hyperpolymath/candy-crash.
+
+== APA 7
+
+Polymath, H. (2025). _candy-crash_ [Computer software]. GitHub. https://github.com/hyperpolymath/candy-crash
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

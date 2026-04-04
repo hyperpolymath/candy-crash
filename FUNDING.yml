@@ -1,0 +1,28 @@
+# Funding Configuration
+# RSR Compliance: Funding transparency requirement
+# SPDX-License-Identifier: PMPL-1.0-or-later
+
+# Supported funding platforms
+github: [] # Add GitHub Sponsors username if applicable
+patreon: # Add Patreon username
+open_collective: # Add Open Collective project slug
+ko_fi: # Add Ko-fi username
+tidelift: # Add Tidelift package
+community_bridge: # Add Community Bridge project
+liberapay: # Add Liberapay username
+issuehunt: # Add IssueHunt username
+lfx_crowdfunding: # Add LFX Crowdfunding project
+polar: # Add Polar username
+buy_me_a_coffee: # Add Buy Me a Coffee username
+thanks_dev: # Add thanks.dev username
+custom: [] # Add custom sponsorship URLs
+
+# Solidarity Economics Framework
+# This project operates under principles of:
+# - Fair compensation for contributors
+# - Transparent financial management
+# - Community-driven funding decisions
+# - Equitable distribution of resources
+#
+# Financial reports available at: [TBD]
+# Funding decisions made by: See GOVERNANCE.adoc

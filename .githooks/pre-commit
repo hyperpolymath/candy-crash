@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Git pre-commit hook for Candy Crash
+# Thin wrapper that delegates to Just recipes
+#
+# Installation:
+#   ./.githooks/install.sh
+
+set -e
+
+# Skip in CI
+if [ -n "$CI" ]; then
+    exit 0
+fi
+
+# Check if Just is installed
+if ! command -v just &> /dev/null; then
+    echo "⚠️  Just not installed - install with: cargo install just"
+    echo "    Or visit: https://github.com/casey/just#installation"
+    echo ""
+    echo "Skipping pre-commit checks (not blocking)"
+    exit 0
+fi
+
+# Run pre-commit checks via Just
+just pre-commit-checks

@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Issue template configuration for Candy Crash
+
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/Hyperpolymath/candy-crash/security/advisories/new
+    about: Report security vulnerabilities privately (do not create public issue)
+  - name: 💬 Discussion Forum
+    url: https://github.com/Hyperpolymath/candy-crash/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Documentation
+    url: https://github.com/Hyperpolymath/candy-crash/blob/main/README.md
+    about: Read the project documentation
