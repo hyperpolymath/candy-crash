@@ -1,0 +1,113 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Candy Crash — EXPLAINME
+:toc: preamble
+:icons: font
+
+This file maps README.adoc claims to their implementation evidence for
+sceptical developers.
+
+== "Total Pervasive Ambient Computing for Vehicle Operator Training"
+
+[quote, README.adoc]
+____
+Candy Crash is a framework for training humans to operate vehicles—cars,
+motorbikes, aircraft, watercraft—through pervasive ambient computing.
+____
+
+How this is implemented::
+As of the current state, Candy Crash is a *design-stage project* with a
+detailed conceptual framework documented in the README. The `src/` directory
+contains the initial project scaffold. The README makes clear that "the
+repository currently contains remnants of an earlier approach — a conventional
+LMS for driving theory" which "must be rebuilt from first principles." The
+design documentation in link:ROADMAP.adoc[`ROADMAP.adoc`] defines five phases
+(Phase 0: conceptual foundation through Phase 5: validation).
+
+Caveat::
+No ambient computing infrastructure (sensor mesh, actuator mesh, training
+intelligence) is implemented yet. Phase 0 (conceptual foundation) is
+in progress. The project is honest about being pre-implementation.
+
+== "Environmental intervention that makes the boundaries between training and living dissolve"
+
+[quote, README.adoc]
+____
+This is not an LMS. This is not e-learning. This is not a course. This is an
+environmental intervention.
+____
+
+How this is implemented::
+The README documents a coherent theoretical framework rooted in embodied
+cognition (Gibson, Varela et al.), situated learning (Lave & Wenger), and
+ubiquitous computing (Weiser). The Human Factors Constraints section applies
+Cognitive Load Theory (Sweller), vigilance decrement research, and Endsley's
+three-level situation awareness model as hard design constraints — preventing
+the system from over-claiming ambient training's effectiveness.
+
+Caveat::
+The theoretical framework is documented but not yet translated into running
+code. References cite peer-reviewed literature (Endsley 1995, Sweller 1988,
+Mark et al. 2008) rather than unpublished assertions.
+
+== "Rust core + ReScript UI + SPARK/Ada verification"
+
+[quote, README.adoc]
+____
+Core Runtime: Rust. User Interfaces: ReScript. Formal Verification: SPARK/Ada.
+____
+
+How this is implemented::
+The technology direction is declared in the README's "Technology Direction"
+section with explicit rationale: Rust for real-time sensor/actuator loops,
+ReScript for type-safe UI, SPARK/Ada for aviation-adjacent safety requirements.
+The link:ROADMAP.adoc[`ROADMAP.adoc`] maps these to implementation phases.
+`Cargo.toml` confirms Rust as the build system.
+
+Caveat::
+None of the language implementations are complete yet — this is the declared
+direction, not a done state. The earlier Rails/Ruby codebase in the repository
+represents the wrong paradigm and is scheduled for removal.
+
+== Dogfooded Across The Account
+
+[cols="1,2,2", options="header"]
+|===
+| Technology / Pattern | Used here | Also used in
+
+| Embodied cognition / pervasive computing theory
+| Design framework for ambient training
+| link:https://github.com/hyperpolymath/heterogenous-mobile-computing[heterogenous-mobile-computing]
+  (similar ambient AI routing concept)
+
+| Rust/SPARK architecture
+| Planned for safety-critical sensor loops
+| link:https://github.com/hyperpolymath/launch-scaffolder[launch-scaffolder],
+  link:https://github.com/hyperpolymath/ephapax[ephapax]
+
+| TPCF contributor framework
+| Contribution governance model
+| link:https://github.com/hyperpolymath/boj-server[boj-server]
+
+| ReScript for UI
+| Planned for configuration and monitoring
+| link:https://github.com/hyperpolymath/gossamer[gossamer],
+  link:https://github.com/hyperpolymath/panll[panll]
+|===
+
+== Known Gaps
+
+[CAUTION]
+====
+The repository contains remnant Rails/Ruby code from an earlier LMS
+approach. The CLAUDE.md for this repo bans Ruby/Rails explicitly. That code
+should be removed before any Phase 1 implementation begins.
+====
+
+[CAUTION]
+====
+No empirical validation of transfer effects exists yet — the README correctly
+flags this as a design implication ("do not assume ambient training transfers
+to vehicle operation without evidence"). Effectiveness claims require Phase 5
+validation studies.
+====
