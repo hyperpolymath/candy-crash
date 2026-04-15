@@ -1,3 +1,5 @@
+import? "contractile.just"
+
 # Candy Crash LMS - Just Task Runner
 # https://github.com/casey/just
 
