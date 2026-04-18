@@ -57,7 +57,7 @@ The existing code cannot be "refactored" into the correct paradigm. The fundamen
 * Container configuration (Containerfile, Nix flake)
 * Governance and contribution framework
 * Security infrastructure (.well-known, security headers)
-* Git hooks and automation (justfile structure)
+* Git hooks and automation (Justfile structure)
 
 These represent operational infrastructure independent of the application paradigm.
 
