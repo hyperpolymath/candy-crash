@@ -8,20 +8,21 @@ import gleam/list
 import gleam/option.{type Option, None, Some}
 
 import candy_crash/arango/client.{type Connection}
+import candy_crash/verisim/client.{type Connection as VerisimConnection}
 import candy_crash/models/achievement.{type Achievement, type UserAchievement}
 
 /// Check and award achievements for a user
-pub fn check_and_award(db: Connection, user_key: String) -> Nil {
-  check_first_lesson(db, user_key)
-  check_first_quiz(db, user_key)
-  check_perfect_score(db, user_key)
-  check_lesson_milestones(db, user_key)
-  check_quiz_milestones(db, user_key)
+pub fn check_and_award(db: Connection, verisim: VerisimConnection, user_key: String) -> Nil {
+  check_first_lesson(db, verisim, user_key)
+  check_first_quiz(db, verisim, user_key)
+  check_perfect_score(db, verisim, user_key)
+  check_lesson_milestones(db, verisim, user_key)
+  check_quiz_milestones(db, verisim, user_key)
   Nil
 }
 
 /// Award "First Steps" achievement for completing first lesson
-fn check_first_lesson(db: Connection, user_key: String) -> Nil {
+fn check_first_lesson(db: Connection, verisim: VerisimConnection, user_key: String) -> Nil {
   let query = "
     LET completed = LENGTH(
       FOR p IN lesson_progress
@@ -41,22 +42,38 @@ fn check_first_lesson(db: Connection, user_key: String) -> Nil {
       FILTER a.title == 'First Steps'
       RETURN a
     )
-    FILTER achievement != null
-    INSERT {
-      user_key: @user_key,
-      achievement_key: achievement._key,
-      earned_at: @now
-    } INTO user_achievements
-    RETURN NEW
+    RETURN achievement
   "
 
-  let now = birl.now() |> birl.to_iso8601
-  let _ = client.query(db, query, [
-    #("user_key", json.string(user_key)),
-    #("now", json.string(now)),
-  ], dynamic.dynamic)
-
-  Nil
+  case client.query(db, query, [#("user_key", json.string(user_key))], dynamic.dynamic) {
+    Ok(qr) -> {
+      case qr.result {
+        [achievement_dyn, ..] -> {
+          // Award in Arango
+          let now = birl.now() |> birl.to_iso8601
+          let assert Ok(achievement_key) = dynamic.field("_key", dynamic.string)(achievement_dyn)
+          let doc = json.object([
+            #("user_key", json.string(user_key)),
+            #("achievement_key", json.string(achievement_key)),
+            #("earned_at", json.string(now))
+          ])
+          let _ = client.insert_document(db, "user_achievements", doc, dynamic.dynamic)
+          
+          // Audit in VerisimDB
+          let _ = verisim.store_event(verisim, "achievements", json.object([
+            #("event", json.string("achievement_awarded")),
+            #("user_key", json.string(user_key)),
+            #("achievement_key", json.string(achievement_key)),
+            #("title", json.string("First Steps")),
+            #("timestamp", json.string(now))
+          ]))
+          Nil
+        }
+        [] -> Nil
+      }
+    }
+    Error(_) -> Nil
+  }
 }
 
 /// Award "Quiz Master" achievement for first quiz completion

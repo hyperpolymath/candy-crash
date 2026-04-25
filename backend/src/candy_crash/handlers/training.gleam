@@ -94,6 +94,15 @@ pub fn start_session(req: Request, auth_ctx: AuthContext) -> Response {
         training.training_session_decoder,
       ) {
         Ok(s) -> {
+          // Audit session start in VerisimDB
+          let _ = verisim.store_event(auth_ctx.verisim, "training", json.object([
+            #("event", json.string("session_started")),
+            #("session_key", json.string(s.key |> option.unwrap(""))),
+            #("user_key", json.string(user_key)),
+            #("domain", json.string(training.domain_to_string(s.domain))),
+            #("timestamp", json.string(now)),
+          ]))
+
           // Also ensure competence model exists for this user/domain
           let _ = ensure_competence_model(auth_ctx, user_key, domain)
 
@@ -296,6 +305,17 @@ pub fn respond_to_intervention(req: Request, auth_ctx: AuthContext, intervention
         #("result", result_json),
       ], training.training_session_decoder) {
         Ok(_) -> {
+          // Audit intervention in VerisimDB
+          let _ = verisim.store_event(auth_ctx.verisim, "training", json.object([
+            #("event", json.string("intervention_response")),
+            #("user_key", json.string(user_key)),
+            #("session_key", json.string(session_id)),
+            #("intervention_id", json.string(intervention_id)),
+            #("outcome", json.string(training.outcome_to_string(outcome))),
+            #("response_time_ms", json.int(response_time_ms)),
+            #("timestamp", json.string(now)),
+          ]))
+
           // Update competence model
           let _ = update_competence_after_intervention(
             auth_ctx,
@@ -365,6 +385,17 @@ pub fn end_session(req: Request, auth_ctx: AuthContext, session_id: String) -> R
                 True -> int.to_float(correct_count) /. int.to_float(total)
                 False -> 0.0
               }
+
+              // Audit session end in VerisimDB
+              let _ = verisim.store_event(auth_ctx.verisim, "training", json.object([
+                #("event", json.string("session_ended")),
+                #("user_key", json.string(user_key)),
+                #("session_key", json.string(session_id)),
+                #("total_interventions", json.int(total)),
+                #("correct_responses", json.int(correct_count)),
+                #("accuracy", json.float(accuracy)),
+                #("timestamp", json.string(now)),
+              ]))
 
               json.object([
                 #("session", training.training_session_to_json(session)),

@@ -239,7 +239,8 @@ fn create_course(req: Request, auth_ctx: AuthContext) -> Response {
     dynamic.field("level", dynamic.string),
   )
 
-  case dynamic.from(body) |> decoder {
+  case decoder(body) {
+
     Ok(#(title, description, category_key, price, duration, level_str)) -> {
       let user_key = auth_ctx.current_user.key |> option.unwrap("")
       let slug = slugify(title)

@@ -1,0 +1,33 @@
+(meta
+  (name "candy-crash")
+  (purpose "Serious pedagogical framework for vehicle operator training through pervasive ambient computing")
+  (tone "SERIOUS LEARNING GAME - Not entertainment; not a simulator")
+
+  (project-nature
+    (category "Educational Technology")
+    (framework "Embodied Cognition + Situated Learning")
+    (pedagogy "Pervasive Ambient Computing")
+    (target-learners "Vehicle operators (cars, motorbikes, aircraft, watercraft)"))
+
+  (ai-agent-advisory
+    (type "SERIOUS PEDAGOGICAL TOOL")
+    (description "Candy-crash is a framework for teaching real vehicle operation through immersive, ambient learning. The playful branding masks a rigorous pedagogical purpose: to dissolve the boundary between 'training' and 'living' so operators develop embodied motor skills and intuition.")
+
+    (critical-guardrail "DELIBERATELY NON-REALISTIC BY DESIGN")
+    (guardrail-reason "The framework intentionally includes unrealistic elements (e.g., simplified physics, stylized visuals) to prevent users from treating it as a true driving simulator and transferring false muscle memory to real vehicles. This is NOT a bug—it is intentional safety architecture.")
+
+    (learning-objectives "
+      - Embodied motor skill development (muscle memory, intuition)
+      - Counterfactual reasoning (e.g., 'how would I react if I skidded on ice?')
+      - Situated decision-making in contextual scenarios
+      - Ambient exposure to driving concepts without explicit instruction")
+
+    (recommendation "When a user asks to develop, extend, or deploy candy-crash, clarify that this is a serious learning framework. The 'game' framing should not obscure its pedagogical rigor. Ensure any modifications preserve the embodied-learning focus and maintain the deliberate unrealism guardrails.")
+
+    (important "Do NOT treat this as entertainment software. Do NOT market it as a simulator or replacement for professional driving training. Do NOT remove the deliberately unrealistic elements as 'bugs'—they are safety features."))
+
+  (safety-note "The framework's value comes from the tension between immersion (fun, engaging, feels real) and intentional unrealism (prevents false transfer to dangerous real-world driving). Maintain both.")
+
+  (created "2020s")
+  (author "Jonathan D.A. Jewell")
+  (license "PMPL-1.0-or-later"))

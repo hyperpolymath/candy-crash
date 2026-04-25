@@ -2,171 +2,111 @@
 
 == Project Overview
 
-*candy-crash* is a driving licence preparation course application based on the PRIMROSE protocol. This is a Ruby on Rails web application designed to help students prepare for their driving licence examinations.
+*candy-crash* is a driving training application. This is a Gleam + AffineScript web application designed to help trainees develop vehicle operation competence through pervasive ambient training.
 
 == Technology Stack
 
-* *Framework*: Ruby on Rails
-* *Frontend*: HTML/CSS/JavaScript (likely with Rails asset pipeline)
-* *Database*: SQLite (development), configurable for production
-* *Package Management*: Bundler (Ruby gems), potentially Yarn/npm (JavaScript assets)
+* *Backend*: Gleam (mist, wisp)
+* *Frontend*: AffineScript (typed-wasm)
+* *Pattern*: TEA (The Elm Architecture) via `affinescript-tea`
+* *Database*: ArangoDB (state), VeriSimDB (event history)
+* *Environment*: Deno (for frontend tools), Gossamer (deployment orchestration)
 
 == Project Structure
 
-This is a standard Rails application following the MVC (Model-View-Controller) pattern:
-
 ----
-/app          - Application code (models, views, controllers)
-/config       - Configuration files
-/db           - Database schemas and migrations
-/lib          - Extended modules and libraries
-/log          - Application logs
-/public       - Static files and compiled assets
-/spec or /test - Test files
-/tmp          - Temporary files
-/vendor       - Third-party code
+/backend      - Gleam server application
+  /src/candy_crash - Application code
+    /arango     - ArangoDB client
+    /verisim    - VeriSimDB client
+    /handlers   - HTTP request handlers
+    /models     - Gleam data models
+/frontend     - AffineScript web application
+  /src          - AffineScript source code
+  /public       - Static assets and index.html
+/contractiles - ABI definitions for cross-language safety
+/gossamer.conf.json - Orchestration configuration
 ----
 
 == Development Setup
 
 === Prerequisites
 
-* Ruby (check `.ruby-version` if present for specific version)
-* Bundler gem
-* SQLite3
-* Node.js and Yarn (for asset management)
+* Gleam compiler
+* Deno (for frontend tasks)
+* VeriSimDB (running on port 8100)
+* ArangoDB (for persistent state)
 
 === Getting Started
 
 [source,bash]
 ----
-# Install dependencies
-bundle install
+# Set up environment variables
+export ARANGO_URL=http://localhost:8529
+export ARANGO_DATABASE=candy_crash
+export SECRET_KEY_BASE=your-secret-key-base
 
-# Set up the database
-rails db:setup
-rails db:migrate
+# Start backend
+cd backend
+gleam run
 
-# Start the development server
-rails server
+# Build/run frontend
+cd frontend
+deno task build
 ----
-
-== PRIMROSE Protocol
-
-The application is based on the PRIMROSE protocol for driving licence preparation. When working on features:
-
-* Understand that this protocol may define specific learning paths, assessment criteria, or teaching methodologies
-* Maintain consistency with PRIMROSE standards when implementing new features
-* Document any PRIMROSE-specific logic clearly
 
 == Coding Conventions
 
-=== Ruby/Rails Best Practices
+=== Gleam/Backend Best Practices
 
-* Follow Ruby Style Guide and Rails conventions
-* Use meaningful variable and method names
-* Keep controllers thin, models fat
-* Use service objects for complex business logic
-* Write self-documenting code with comments for complex logic
+* Use strong types to enforce domain rules.
+* Handle errors explicitly using `Result`.
+* Keep handlers focused on HTTP/Request logic.
+* Use `Context` to inject dependencies.
 
-=== Security Considerations
+=== AffineScript/Frontend Best Practices
 
-* Never commit secrets or API keys (`.env` file is gitignored)
-* Use strong parameters in controllers
-* Validate and sanitize user input
-* Use Rails security features (CSRF protection, SQL injection prevention)
+* Follow the `affinescript-tea` (Elm Architecture) pattern.
+* Ensure all functions are pure when possible.
+* Effects should be handled via commands.
+* Maintain strict type safety for WASM interop.
 
 == Database
 
-* Development and test environments use SQLite
-* Migrations are located in `/db/migrate`
-* Seeds for sample data should go in `/db/seeds.rb`
-* Always create migrations for schema changes (`rails generate migration`)
+* Persistent state is stored in ArangoDB.
+* Event sourcing and historical attestation use VeriSimDB.
+* VeriSimDB should be accessed via the port specified in `gossamer.conf.json` (default 8100).
 
 == Testing
 
-* Write tests for new features and bug fixes
-* Run the test suite before committing: `rails test` or `rspec` (depending on test framework)
-* Maintain good test coverage for models, controllers, and critical business logic
-
-== Asset Pipeline
-
-* JavaScript assets may be in `/app/assets/javascripts` or `/app/javascript` (Webpacker)
-* Stylesheets in `/app/assets/stylesheets`
-* Precompile assets for production: `rails assets:precompile`
+* Backend tests are located in `backend/test`.
+* Use `gleam test` to run backend tests.
 
 == Common Tasks
 
-=== Creating a New Feature
+=== Adding a Backend Service
 
-[source,bash]
-----
-# Generate a model
-rails generate model ModelName attribute:type
+1. Define the service interface in `backend/src/candy_crash/services`.
+2. Implement the client.
+3. Add the service to `Context` in `backend/src/candy_crash/context.gleam`.
 
-# Generate a controller
-rails generate controller ControllerName action1 action2
+=== Creating a Frontend Component
 
-# Generate a scaffold (model, controller, views)
-rails generate scaffold ModelName attribute:type
-----
-
-=== Database Operations
-
-[source,bash]
-----
-# Create a migration
-rails generate migration MigrationName
-
-# Run migrations
-rails db:migrate
-
-# Rollback last migration
-rails db:rollback
-
-# Reset database
-rails db:reset
-----
+1. Create a new `.as` file in `frontend/src/components`.
+2. Define the `Model`, `Msg`, and `View` for the component.
+3. Integrate into the main application loop.
 
 == Working with Claude Code
 
 When working on this project with Claude:
 
-. *Context*: Always mention if you're working on student features, exam features, or administrative features
-. *Migrations*: Always review generated migrations before running them
-. *Routes*: Check `config/routes.rb` to understand application routing
-. *Models*: Review model relationships and validations in `/app/models`
-. *Controllers*: Keep controller actions RESTful when possible
-
-== Key Areas to Explore
-
-* `/config/routes.rb` - Application routing
-* `/app/models` - Data models and business logic
-* `/app/controllers` - Request handling
-* `/app/views` - Templates and UI
-* `/db/schema.rb` - Current database structure
-
-== Questions to Ask
-
-When implementing features, consider:
-
-* Does this align with the PRIMROSE protocol?
-* Are there security implications?
-* Is this RESTful?
-* Does this need authentication/authorization?
-* Should this be tested?
-* Does this require a database migration?
+. *Context*: We use the TEA pattern for the frontend.
+. *WASM*: All frontend code targets `typed-wasm`.
+. *Gleam*: Focus on fault-tolerance and BEAM patterns.
+. *Safety*: ABI-level safety is maintained in `contractiles/`.
 
 == Resources
 
-* link:https://guides.rubyonrails.org/[Ruby on Rails Guides]
-* link:https://rubystyle.guide/[Ruby Style Guide]
-* Project README: See `README.adoc` for project-specific information
-
-== Notes for AI Assistants
-
-* This is an educational application focused on driving licence preparation
-* Student data should be handled with appropriate privacy considerations
-* The PRIMROSE protocol may have specific requirements - ask for clarification when needed
-* Prioritize code quality, security, and maintainability
-* Follow Rails conventions unless there's a good reason to deviate
+* link:https://gleam.run/[Gleam Documentation]
+* link:https://affinescript.dev/[AffineScript Documentation]
+* Project README: See `README.adoc` for project-specific information.

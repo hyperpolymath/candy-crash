@@ -27,6 +27,7 @@ pub fn require_auth(
             Ok(Some(user)) -> {
               let auth_ctx = AuthContext(
                 db: ctx.db,
+                verisim: ctx.verisim,
                 secret_key_base: ctx.secret_key_base,
                 current_user: user,
               )

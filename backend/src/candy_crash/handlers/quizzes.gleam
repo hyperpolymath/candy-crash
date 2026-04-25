@@ -259,7 +259,7 @@ pub fn submit_answer(req: Request, auth_ctx: AuthContext, attempt_id: String) ->
         dynamic.optional_field("option_key", dynamic.string),
       )
 
-      case dynamic.from(body) |> decoder {
+      case decoder(body) {
         Ok(#(question_key, option_key)) -> {
           // Get correct answer and calculate points
           let check_query = "
@@ -358,7 +358,7 @@ pub fn complete_attempt(req: Request, auth_ctx: AuthContext, attempt_id: String)
           case result.result {
             [a, ..] -> {
               // Check for achievements
-              achievement_service.check_and_award(auth_ctx.db, user_key)
+              achievement_service.check_and_award(auth_ctx.db, auth_ctx.verisim, user_key)
 
               attempt_to_json(a)
               |> json.to_string_builder

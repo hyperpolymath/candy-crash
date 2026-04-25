@@ -25,14 +25,14 @@ pub fn register(req: Request, ctx: Context) -> Response {
         dynamic.optional_field("role", dynamic.string),
       )
 
-      case dynamic.from(body) |> decoder {
+      case decoder(body) {
         Ok(#(email, password, role_str)) -> {
           let role = case role_str {
             Some(r) -> user.role_from_string(r)
             None -> user.Student
           }
 
-          case auth_service.register(ctx.db, email, password, role) {
+          case auth_service.register(ctx.db, ctx.verisim, email, password, role) {
             Ok(u) -> {
               let token = auth_service.create_token(
                 u.key |> option.unwrap(""),
@@ -79,9 +79,9 @@ pub fn login(req: Request, ctx: Context) -> Response {
         dynamic.field("password", dynamic.string),
       )
 
-      case dynamic.from(body) |> decoder {
+      case decoder(body) {
         Ok(#(email, password)) -> {
-          case auth_service.login(ctx.db, email, password) {
+          case auth_service.login(ctx.db, ctx.verisim, email, password) {
             Ok(u) -> {
               let token = auth_service.create_token(
                 u.key |> option.unwrap(""),
@@ -149,7 +149,7 @@ pub fn forgot_password(req: Request, ctx: Context) -> Response {
 
       let decoder = dynamic.field("email", dynamic.string)
 
-      case dynamic.from(body) |> decoder {
+      case decoder(body) {
         Ok(email) -> {
           case auth_service.find_user_by_email(ctx.db, email) {
             Ok(Some(u)) -> {
@@ -202,7 +202,7 @@ pub fn reset_password(req: Request, ctx: Context) -> Response {
         dynamic.field("password", dynamic.string),
       )
 
-      case dynamic.from(body) |> decoder {
+      case decoder(body) {
         Ok(#(token, password)) -> {
           // In production, validate token and find user
           // For now, just return success message

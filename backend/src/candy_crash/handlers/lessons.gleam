@@ -160,7 +160,7 @@ pub fn complete(req: Request, auth_ctx: AuthContext, course_id: String, lesson_i
                     Ok(p) -> {
                       // Update enrollment progress and check achievements
                       update_enrollment_progress(auth_ctx, user_key, course_id)
-                      achievement_service.check_and_award(auth_ctx.db, user_key)
+                      achievement_service.check_and_award(auth_ctx.db, auth_ctx.verisim, user_key)
 
                       progress_to_json(p)
                       |> json.to_string_builder
@@ -189,7 +189,7 @@ pub fn complete(req: Request, auth_ctx: AuthContext, course_id: String, lesson_i
                     Ok(p) -> {
                       // Update enrollment progress and check achievements
                       update_enrollment_progress(auth_ctx, user_key, course_id)
-                      achievement_service.check_and_award(auth_ctx.db, user_key)
+                      achievement_service.check_and_award(auth_ctx.db, auth_ctx.verisim, user_key)
 
                       progress_to_json(p)
                       |> json.to_string_builder

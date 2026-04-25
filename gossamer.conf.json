@@ -1,0 +1,11 @@
+{
+  "port": 4040,
+  "title": "Candy Crash LMS",
+  "entry": "frontend/public/index.html",
+  "groove": {
+    "services": [
+      { "name": "burble", "port": 4020 },
+      { "name": "verisimdb", "port": 8100 }
+    ]
+  }
+}

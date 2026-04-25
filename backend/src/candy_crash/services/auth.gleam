@@ -12,6 +12,7 @@ import gleam/result
 import gleam/string
 
 import candy_crash/arango/client.{type ArangoError, type Connection}
+import candy_crash/verisim/client.{type Connection as VerisimConnection}
 import candy_crash/models/user.{type User, User}
 
 pub type AuthError {
@@ -79,6 +80,7 @@ fn sign(payload: String, secret: String) -> String {
 /// Register a new user
 pub fn register(
   db: Connection,
+  verisim: VerisimConnection,
   email: String,
   password: String,
   role: user.Role,
@@ -90,7 +92,16 @@ pub fn register(
       let hashed = hash_password(password)
       let new_user = user.new_user(email, hashed, role)
       case client.insert_document(db, "users", user.to_json(new_user), user.decoder) {
-        Ok(u) -> Ok(u)
+        Ok(u) -> {
+          // Audit registration in VerisimDB
+          let _ = verisim.store_event(verisim, "audit", json.object([
+            #("event", json.string("user_registered")),
+            #("user_key", json.string(u.key)),
+            #("email", json.string(u.email)),
+            #("timestamp", json.string(birl.now() |> birl.to_iso8601)),
+          ]))
+          Ok(u)
+        }
         Error(e) -> Error(DatabaseError(e))
       }
     }
@@ -101,17 +112,44 @@ pub fn register(
 /// Authenticate a user
 pub fn login(
   db: Connection,
+  verisim: VerisimConnection,
   email: String,
   password: String,
 ) -> Result(User, AuthError) {
   case find_user_by_email(db, email) {
     Ok(Some(u)) -> {
       case verify_password(password, u.encrypted_password) {
-        True -> Ok(u)
-        False -> Error(InvalidCredentials)
+        True -> {
+          // Audit login in VerisimDB
+          let _ = verisim.store_event(verisim, "audit", json.object([
+            #("event", json.string("user_logged_in")),
+            #("user_key", json.string(u.key)),
+            #("timestamp", json.string(birl.now() |> birl.to_iso8601)),
+          ]))
+          Ok(u)
+        }
+        False -> {
+          // Audit failed login in VerisimDB
+          let _ = verisim.store_event(verisim, "audit", json.object([
+            #("event", json.string("login_failed")),
+            #("email", json.string(email)),
+            #("reason", json.string("invalid_credentials")),
+            #("timestamp", json.string(birl.now() |> birl.to_iso8601)),
+          ]))
+          Error(InvalidCredentials)
+        }
       }
     }
-    Ok(None) -> Error(InvalidCredentials)
+    Ok(None) -> {
+      // Audit failed login in VerisimDB
+      let _ = verisim.store_event(verisim, "audit", json.object([
+        #("event", json.string("login_failed")),
+        #("email", json.string(email)),
+        #("reason", json.string("user_not_found")),
+        #("timestamp", json.string(birl.now() |> birl.to_iso8601)),
+      ]))
+      Error(InvalidCredentials)
+    }
     Error(e) -> Error(DatabaseError(e))
   }
 }

@@ -12,6 +12,7 @@ import wisp/wisp_mist
 
 import candy_crash/router
 import candy_crash/arango/client as arango
+import candy_crash/verisim/client as verisim
 import candy_crash/context.{Context}
 
 pub fn main() {
@@ -23,6 +24,9 @@ pub fn main() {
     |> result.replace_error("ARANGO_DATABASE not set")
   let arango_user = envoy.get("ARANGO_USER") |> result.unwrap("root")
   let arango_pass = envoy.get("ARANGO_PASSWORD") |> result.unwrap("")
+
+  let verisim_url = envoy.get("VERISIMDB_URL") |> result.unwrap("http://localhost:8100")
+  let verisim_db = envoy.get("VERISIMDB_DATABASE") |> result.unwrap("candy_crash")
 
   let assert Ok(secret_key_base) = envoy.get("SECRET_KEY_BASE")
     |> result.replace_error("SECRET_KEY_BASE not set")
@@ -42,10 +46,17 @@ pub fn main() {
     password: arango_pass,
   )
 
+  let verisim_config = verisim.Config(
+    url: verisim_url,
+    database: verisim_db,
+  )
+
   let assert Ok(db) = arango.connect(arango_config)
+  let assert Ok(verisim_conn) = verisim.connect(verisim_config)
 
   let ctx = Context(
     db: db,
+    verisim: verisim_conn,
     secret_key_base: secret_key_base,
   )
 

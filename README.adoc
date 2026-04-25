@@ -405,11 +405,9 @@ For each vehicle domain:
 
 == Current State
 
-The repository currently contains remnants of an earlier approach—a conventional LMS for driving theory. This approach was fundamentally misguided.
+The repository currently contains the *new* paradigm implementation—a Gleam-based backend and an AffineScript-based frontend.
 
-The existing Rails application, database schema, and quiz engine represent the *wrong paradigm*. They assume training is "content delivery" rather than "environmental cultivation."
-
-This must be rebuilt from first principles.
+This approach assumes training is "environmental cultivation" rather than "content delivery."
 
 See link:./ROADMAP.adoc[ROADMAP.adoc] for the practical path forward, including blockers and key decisions.
 
@@ -417,19 +415,19 @@ See link:./ROADMAP.adoc[ROADMAP.adoc] for the practical path forward, including 
 
 Given the RSR compliance requirements and the nature of the system:
 
-**Core Runtime**: Rust
-* Systems-level performance for real-time sensor/actuator loops
-* Memory safety for safety-critical systems
-* Embedded deployment capability
+**Core Runtime**: Gleam (on Erlang/BEAM)
+* Systems-level resilience for real-time sensor/actuator loops
+* Fault-tolerance for safety-critical systems
+* Distributed capability for ambient meshes
 
-**User Interfaces**: ReScript
-* Type-safe web interfaces for configuration and monitoring
-* Compilation to efficient JavaScript
-* Functional paradigm matches the declarative nature of UI
+**User Interfaces**: AffineScript (typed-wasm)
+* Type-safe web interfaces for configuration and monitoring using the TEA (The Elm Architecture) pattern
+* Compilation to high-performance WebAssembly
+* Direct memory manipulation for low-latency feedback
 
-**Formal Verification**: SPARK/Ada
+**Formal Verification**: VeriSimDB
 * Safety-critical components require formal verification
-* Proof of absence of runtime errors
+* Proof of absence of runtime errors via event-sourced state validation
 * Required for aviation and medical-adjacent systems
 
 **ML/Inference**: Rust with WASM

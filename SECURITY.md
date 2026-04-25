@@ -6,8 +6,8 @@ We release patches for security vulnerabilities. Currently supported versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 1.1.x   | :white_check_mark: | (Gleam/AffineScript stack)
+| 1.0.x   | :x:                | (Legacy Rails implementation)
 
 ## Reporting a Vulnerability
 
@@ -16,7 +16,7 @@ We release patches for security vulnerabilities. Currently supported versions:
 Instead, please report them responsibly to our security team:
 
 ### Preferred Contact Method
-- **Email**: security@candycrash.example.com (replace with actual email)
+- **Email**: security@candycrash.example.com
 - **Expected Response Time**: Within 48 hours
 - **Disclosure Timeline**: 90 days from initial report
 
@@ -28,85 +28,53 @@ Please provide:
 - Suggested fix (if available)
 - Your contact information for follow-up
 
-### Our Commitment
-- Acknowledge receipt within 48 hours
-- Provide regular status updates (at least weekly)
-- Credit researchers who report valid vulnerabilities (unless anonymity requested)
-- Coordinate disclosure timeline with reporter
-
 ## Security Best Practices
 
 ### For Users
-- Always use HTTPS in production
-- Keep Rails and all gems updated
-- Use environment variables for secrets (never commit `.env`)
-- Enable 2FA for admin accounts
-- Regular security audits via `bundle audit`
+- Always use HTTPS in production.
+- Keep Gleam and all hex packages updated.
+- Use environment variables for secrets (never commit `.env`).
+- Ensure `gossamer` and `burble` are correctly configured.
 
 ### For Contributors
-- Never commit secrets, API keys, or credentials
-- Use strong parameter filtering in controllers
-- Validate and sanitize all user input
-- Follow OWASP Top 10 guidelines
-- Run `brakeman` security scanner before PRs
+- Never commit secrets, API keys, or credentials.
+- Use Gleam's strong type system to prevent injection attacks.
+- Validate and sanitize all user input at the edge.
+- All WASM components must be sandboxed.
+- Follow OWASP Top 10 guidelines.
 
 ## Security Tools
 
 This project uses:
-- **Brakeman**: Static analysis security scanner
-- **Bundler Audit**: Checks for vulnerable gem versions
-- **Rails Security Checklist**: Production deployment security
-
-Run security checks:
-```bash
-# Install tools
-gem install brakeman bundler-audit
-
-# Run checks
-brakeman --run-all-checks
-bundle audit check --update
-```
+- **Gleam Audit**: Checks for vulnerable Gleam packages.
+- **AffineScript Linter**: Ensures type safety and security-best practices in WASM modules.
+- **VeriSimDB Attestation**: Formally verifies data integrity.
 
 ## Known Security Considerations
 
 ### Authentication
-- Devise configured with secure defaults
-- Password requirements: 6+ characters (configurable)
-- Session timeout: 30 days (configurable)
+- Authentication is handled via Gleam middleware.
+- Passwords are hashed using Argon2id.
 
 ### Authorization
-- Pundit policies enforce role-based access
-- All sensitive actions require authentication
+- Role-based access control (RBAC) enforced in the backend.
 
 ### Data Protection
-- Passwords hashed with bcrypt
-- CSRF protection enabled
-- SQL injection prevention via ActiveRecord
-- XSS prevention via Rails HTML escaping
-
-## Security Updates
-
-We follow semantic versioning with security patches:
-- **Patch releases** (1.0.x): Security fixes only
-- **Minor releases** (1.x.0): Security + features
-- **Major releases** (x.0.0): Breaking changes may include security redesigns
-
-Subscribe to security advisories:
-- GitHub Security Advisories (Watch this repository)
-- Rails Security mailing list
-- Ruby Security advisories
+- Sensitive data is encrypted before being stored in VeriSimDB.
+- CSRF protection is enabled for all stateful requests.
+- WASM-level isolation for frontend components.
 
 ## Compliance
 
 This application aims to comply with:
-- OWASP Top 10 Web Application Security Risks
-- GDPR (for EU student data)
-- UK Data Protection Act 2018
-- WCAG 2.1 Level AA (accessibility)
+- OWASP Top 10 Web Application Security Risks.
+- GDPR (for EU student data).
+- UK Data Protection Act 2018.
+- WCAG 2.3 AAA (accessibility).
 
 ## Security Champions
 
 Current security maintainers:
-- See MAINTAINERS.md for contact information
+- See MAINTAINERS.md for contact information.
 
 Last updated: 2025-01-22
