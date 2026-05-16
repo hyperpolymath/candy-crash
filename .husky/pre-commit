@@ -8,7 +8,7 @@ echo "Running language policy checks..."
 
 # Check for TypeScript files
 if git diff --cached --name-only | grep -E '\.(ts|tsx)$' | grep -v node_modules; then
-    echo "ERROR: TypeScript files are not allowed. Use ReScript instead."
+    echo "ERROR: TypeScript files are not allowed. Use AffineScript instead."
     echo "Banned files:"
     git diff --cached --name-only | grep -E '\.(ts|tsx)$' | grep -v node_modules
     exit 1
