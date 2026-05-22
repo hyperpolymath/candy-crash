@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // candy_crash_test.gleam — trivial smoke test for candy_crash backend.
 // Uses gleeunit as the test framework (declared in gleam.toml dev-dependencies).
 

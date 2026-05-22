@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # validate_structure.sh — structural check for candy-crash
 # Verifies required files and directories are present.
 

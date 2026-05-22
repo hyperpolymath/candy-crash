@@ -1,6 +1,6 @@
 const std = @import("std");
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // C-compatible ABI implementation for Candy Crash training capability registry
 
 pub const ResultCode = enum(u32) {
