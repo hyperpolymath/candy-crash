@@ -3,6 +3,8 @@ name: ReScript/Deno CI
 on: [push, pull_request]
   permissions: contents: read
 
+permissions: read-all
+
 jobs:
   build:
     runs-on: ubuntu-latest
