@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@716da3240e4f2a71f008821946059e7943f7f0c1 # v1.196.0
+        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
@@ -62,7 +62,7 @@ jobs:
         env:
           COVERAGE: true
       - name: Upload coverage
-        uses: codecov/codecov-action@1e68e0611dbfcd30bd5b139f99d79c5364da54e1 # v5.1.2
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v5.1.2
         if: always()
         with:
           files: ./coverage/lcov.info
@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@716da3240e4f2a71f008821946059e7943f7f0c1 # v1.196.0
+        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
@@ -105,7 +105,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@716da3240e4f2a71f008821946059e7943f7f0c1 # v1.196.0
+        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
@@ -135,7 +135,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@5a2ce3f5b92ee19cbb1541a4984c17353ba9c4a3 # v4.5.0
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v4.5.0
 
   codeql:
     name: CodeQL Analysis
@@ -166,7 +166,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@716da3240e4f2a71f008821946059e7943f7f0c1 # v1.196.0
+        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
