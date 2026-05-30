@@ -19,6 +19,9 @@ permissions: read-all
 
 jobs:
   analysis:
+    permissions:
+      security-events: write
+      id-token: write
     runs-on: ubuntu-latest
     permissions:
       security-events: write
