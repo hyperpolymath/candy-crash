@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 #
 # Git pre-push hook for Candy Crash
 # Thin wrapper that delegates to Just recipes

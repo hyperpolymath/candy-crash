@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: 2026 Hyperpolymath
 //
 // Encrypted Telemetry Processing

@@ -1,6 +1,6 @@
 # TEST-NEEDS.md — CRG Grade B Test Suite
 
-<!-- SPDX-License-Identifier: MPL-2.0 -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 
 This document records the six independently runnable test targets required for
 CRG Grade B compliance.

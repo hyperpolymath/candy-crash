@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MPL-2.0
 # SPDX-FileCopyrightText: 2025 Hyperpolymath
 
 # Husky pre-commit hook for language policy enforcement
