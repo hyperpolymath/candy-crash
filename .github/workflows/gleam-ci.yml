@@ -15,6 +15,9 @@ on:
     paths:
       - 'backend/**'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build & Test
