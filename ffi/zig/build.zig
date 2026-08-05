@@ -1,4 +1,4 @@
-// {{PROJECT}} FFI Build Configuration
+// CANDY_CRASH FFI Build Configuration
 // SPDX-License-Identifier: MPL-2.0
 
 const std = @import("std");
