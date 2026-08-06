@@ -10,7 +10,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-  permissions: contents: read
 
 permissions:
   contents: read
@@ -18,13 +17,11 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-  permissions: contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
         with:
           deno-version: v1.x
-  permissions: contents: read
       
       - name: Deno lint
         run: deno lint
@@ -47,7 +44,6 @@ jobs:
 
   security:
     runs-on: ubuntu-latest
-  permissions: contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
