@@ -22,7 +22,7 @@ and this project adheres to link:https://semver.org/spec/v2.0.0.html[Semantic Ve
 === Changed
 
 * Migrated from Rails/Ruby to Gleam/AffineScript (typed-wasm) architecture.
-* Replaced ReScript frontend with AffineScript.
+* Replaced AffineScript frontend with AffineScript.
 
 === Removed
 

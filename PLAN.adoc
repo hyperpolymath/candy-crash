@@ -54,7 +54,7 @@ The existing code cannot be "refactored" into the correct paradigm. The fundamen
 
 * RSR compliance documentation and structure
 * CI/CD infrastructure (GitHub Actions workflows)
-* Container configuration (Containerfile, Nix flake)
+* Container configuration (Containerfile, Guix flake)
 * Governance and contribution framework
 * Security infrastructure (.well-known, security headers)
 * Git hooks and automation (Justfile structure)
@@ -297,7 +297,7 @@ OBD-II for ground vehicles:
 
 For aircraft/watercraft: domain-specific protocols (NMEA for marine, etc.)
 
-=== Phase 3: Actuator Integration (Rust + ReScript)
+=== Phase 3: Actuator Integration (Rust + AffineScript)
 
 ==== 3.1 Abstraction Layer
 
@@ -382,7 +382,7 @@ Each vehicle domain requires:
 * Navigation procedures
 * Emergency protocols
 
-=== Phase 5: User Interface (ReScript)
+=== Phase 5: User Interface (AffineScript)
 
 ==== 5.1 Configuration Interface
 
