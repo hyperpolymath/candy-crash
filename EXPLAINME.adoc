@@ -50,17 +50,17 @@ The theoretical framework is documented but not yet translated into running
 code. References cite peer-reviewed literature (Endsley 1995, Sweller 1988,
 Mark et al. 2008) rather than unpublished assertions.
 
-== "Rust core + ReScript UI + SPARK/Ada verification"
+== "Rust core + AffineScript UI + SPARK/Ada verification"
 
 [quote, README.adoc]
 ____
-Core Runtime: Rust. User Interfaces: ReScript. Formal Verification: SPARK/Ada.
+Core Runtime: Rust. User Interfaces: AffineScript. Formal Verification: SPARK/Ada.
 ____
 
 How this is implemented::
 The technology direction is declared in the README's "Technology Direction"
 section with explicit rationale: Rust for real-time sensor/actuator loops,
-ReScript for type-safe UI, SPARK/Ada for aviation-adjacent safety requirements.
+AffineScript for type-safe UI, SPARK/Ada for aviation-adjacent safety requirements.
 The link:ROADMAP.adoc[`ROADMAP.adoc`] maps these to implementation phases.
 `Cargo.toml` confirms Rust as the build system.
 
@@ -89,7 +89,7 @@ represents the wrong paradigm and is scheduled for removal.
 | Contribution governance model
 | link:https://github.com/hyperpolymath/boj-server[boj-server]
 
-| ReScript for UI
+| AffineScript for UI
 | Planned for configuration and monitoring
 | link:https://github.com/hyperpolymath/gossamer[gossamer],
   link:https://github.com/hyperpolymath/panll[panll]

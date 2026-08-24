@@ -16,14 +16,14 @@ candy-crash/
 │   │   └── services/            # Business logic
 │   ├── test/          # Tests
 │   └── gleam.toml     # Gleam project config
-├── frontend/          # ReScript frontend (SPA)
-│   ├── src/           # ReScript source files
+├── frontend/          # AffineScript frontend (SPA)
+│   ├── src/           # AffineScript source files
 │   │   ├── Main.res             # App entry point (TEA architecture)
 │   │   ├── components/          # UI components
 │   │   ├── pages/               # Page views
 │   │   ├── Api.res              # API client
 │   │   └── Router.res           # Client-side routing
-│   ├── rescript.json  # ReScript config
+│   ├── affinescript.json  # AffineScript config
 │   └── deno.json      # Deno runtime config
 ├── scripts/           # Development scripts
 └── .github/           # CI/CD workflows
@@ -36,8 +36,8 @@ candy-crash/
 | Backend | **Gleam** | Type-safe functional backend |
 | Web Framework | **Wisp** | HTTP handlers & middleware |
 | Database | **ArangoDB** | Multi-model document/graph DB |
-| Frontend | **ReScript** | Type-safe UI development |
-| Architecture | **rescript-tea** | The Elm Architecture for ReScript |
+| Frontend | **AffineScript** | Type-safe UI development |
+| Architecture | **affinescript-tea** | The Elm Architecture for AffineScript |
 | Routing | **cadre-router** | Type-safe URL routing |
 | Runtime | **Deno** | JavaScript/TypeScript runtime |
 
@@ -47,7 +47,7 @@ candy-crash/
 - **Gleam 1.6+** - Backend language
 - **Deno 1.40+** - Frontend runtime
 - **ArangoDB 3.11+** - Database
-- **ReScript 11+** - Frontend compiler (via Deno)
+- **AffineScript 11+** - Frontend compiler (via Deno)
 
 ## Getting Started
 
@@ -98,8 +98,8 @@ gleam run
 ```bash
 cd frontend
 
-# Build ReScript
-deno run -A npm:rescript build -with-deps
+# Build AffineScript
+deno run -A npm:affinescript build -with-deps
 
 # Start development server
 deno task dev
@@ -131,17 +131,17 @@ This project follows the **Hyperpolymath Standard**. See `.claude/CLAUDE.md` for
 ### Allowed Languages
 
 - **Gleam** - Backend services
-- **ReScript** - Frontend UI
+- **AffineScript** - Frontend UI
 - **Rust** - Performance-critical, WASM
 - **Bash** - Scripts, automation
 
 ### Banned Languages
 
-- TypeScript → Use ReScript
+- TypeScript → Use AffineScript
 - Node.js → Use Deno
 - Ruby/Rails → Use Gleam
 - Go → Use Rust
-- Python (general) → Use ReScript/Rust
+- Python (general) → Use AffineScript/Rust
 
 ### Enforcement
 
