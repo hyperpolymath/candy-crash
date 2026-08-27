@@ -146,7 +146,13 @@ echo -e "${GREEN}[ALLOWED]${NC} Found $gleam_count Gleam files."
 
 # ReScript
 res_count=$(find . -name "*.res" -type f 2>/dev/null | wc -l)
-echo -e "${RED}[BANNED]${NC} Found $res_count ReScript files. Migrate to AffineScript."
+if [ "$res_count" -gt 0 ]; then
+    echo -e "${RED}[BANNED]${NC} Found $res_count ReScript files. Migrate to AffineScript."
+    find . -name "*.res" -type f 2>/dev/null | head -5
+    ERRORS=$((ERRORS + 1))
+else
+    echo -e "${GREEN}[OK]${NC} No ReScript files."
+fi
 
 # Rust
 rs_count=$(find . -name "*.rs" -type f 2>/dev/null | wc -l)
