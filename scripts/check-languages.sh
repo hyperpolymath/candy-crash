@@ -70,8 +70,8 @@ echo "Checking for BANNED languages..."
 echo ""
 
 # TypeScript
-check_banned "*.ts" "TypeScript" "ReScript" "-not -path './node_modules/*'"
-check_banned "*.tsx" "TypeScript JSX" "ReScript" "-not -path './node_modules/*'"
+check_banned "*.ts" "TypeScript" "AffineScript" "-not -path './node_modules/*'"
+check_banned "*.tsx" "TypeScript JSX" "AffineScript" "-not -path './node_modules/*'"
 
 # Go
 check_banned "*.go" "Go" "Rust"
@@ -80,7 +80,7 @@ check_banned "*.go" "Go" "Rust"
 echo -n "Checking Python files... "
 py_count=$(find . -name "*.py" -not -path "./salt/*" -type f 2>/dev/null | wc -l)
 if [ "$py_count" -gt 0 ]; then
-    echo -e "${RED}[BANNED]${NC} Found $py_count Python files outside salt/. Use ReScript or Rust."
+    echo -e "${RED}[BANNED]${NC} Found $py_count Python files outside salt/. Use AffineScript or Rust."
     find . -name "*.py" -not -path "./salt/*" -type f 2>/dev/null | head -5
     ERRORS=$((ERRORS + 1))
 else
@@ -122,7 +122,7 @@ fi
 
 # package.json with dependencies
 if [ -f "package.json" ] && grep -q '"dependencies"' package.json 2>/dev/null; then
-    echo -e "${YELLOW}[LEGACY]${NC} package.json with dependencies exists. Should use deno.json."
+    echo -e "${YELLOW}[LEGACY]${NC} package.json with dependencies exists. Bun is the tier-1 runtime and package manager."
     WARNINGS=$((WARNINGS + 1))
 else
     echo -e "${GREEN}[OK]${NC} No package.json with runtime dependencies."
@@ -130,7 +130,7 @@ fi
 
 # node_modules
 if [ -d "node_modules" ]; then
-    echo -e "${YELLOW}[LEGACY]${NC} node_modules directory exists. Should use Deno caching."
+    echo -e "${YELLOW}[LEGACY]${NC} node_modules directory exists. Prefer Bun (tier 1) for package management."
     WARNINGS=$((WARNINGS + 1))
 else
     echo -e "${GREEN}[OK]${NC} No node_modules directory."
@@ -146,7 +146,13 @@ echo -e "${GREEN}[ALLOWED]${NC} Found $gleam_count Gleam files."
 
 # ReScript
 res_count=$(find . -name "*.res" -type f 2>/dev/null | wc -l)
-echo -e "${GREEN}[ALLOWED]${NC} Found $res_count ReScript files."
+if [ "$res_count" -gt 0 ]; then
+    echo -e "${RED}[BANNED]${NC} Found $res_count ReScript files. Migrate to AffineScript."
+    find . -name "*.res" -type f 2>/dev/null | head -5
+    ERRORS=$((ERRORS + 1))
+else
+    echo -e "${GREEN}[OK]${NC} No ReScript files."
+fi
 
 # Rust
 rs_count=$(find . -name "*.rs" -type f 2>/dev/null | wc -l)
