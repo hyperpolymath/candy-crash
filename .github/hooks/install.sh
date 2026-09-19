@@ -2,21 +2,21 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 # Install Git hooks for Candy Crash
-# Usage: ./.githooks/install.sh
+# Usage: ./.github/hooks/install.sh
 
 set -e
 
 echo "🔧 Installing Git hooks..."
 
 # Method 1: Use git config to set hooks path (Git 2.9+)
-if git config core.hooksPath .githooks; then
+if git config core.hooksPath .github/hooks; then
     echo "✓ Git hooks path set to .githooks"
     echo "✓ Hooks will run automatically on commit and push"
 else
     # Method 2: Fallback to copying hooks (older Git versions)
     echo "⚠️  Could not set hooks path, copying hooks manually..."
-    cp .githooks/pre-commit .git/hooks/pre-commit
-    cp .githooks/pre-push .git/hooks/pre-push
+    cp .github/hooks/pre-commit .git/hooks/pre-commit
+    cp .github/hooks/pre-push .git/hooks/pre-push
     chmod +x .git/hooks/pre-commit .git/hooks/pre-push
     echo "✓ Hooks copied to .git/hooks/"
 fi

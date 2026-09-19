@@ -166,7 +166,7 @@ fi
 # Install Git hooks if Just is available
 if command -v just &> /dev/null; then
     echo "🔧 Setting up Git hooks..."
-    if ./.githooks/install.sh; then
+    if ./.github/hooks/install.sh; then
         echo -e "${GREEN}✓${NC} Git hooks installed"
     else
         echo -e "${YELLOW}⚠${NC}  Could not install Git hooks"
