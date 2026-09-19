@@ -25,7 +25,7 @@ document provides guidelines for contributing to the project.
 
 This project adheres to a Code of Conduct that all contributors are
 expected to follow. Please read
-<a href="CODE_OF_CONDUCT.adoc" class="adoc">CODE_OF_CONDUCT</a> before
+<a href="../CODE_OF_CONDUCT.adoc" class="adoc">CODE_OF_CONDUCT</a> before
 contributing.
 
 ## Getting Started
@@ -271,7 +271,7 @@ COVERAGE=true rspec
 
 **Never** report security issues via public GitHub issues.
 
-See <a href="SECURITY.md" class="md">SECURITY</a> for responsible
+See <a href="../SECURITY.md" class="md">SECURITY</a> for responsible
 disclosure procedures.
 
 ## Recognition
