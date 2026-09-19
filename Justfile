@@ -92,7 +92,7 @@ validate-rsr:
     @test -f README.adoc && echo "  ✓ README.adoc" || echo "  ✗ README.adoc missing"
     @test -f LICENSE && echo "  ✓ LICENSE" || echo "  ✗ LICENSE missing"
     @test -f SECURITY.md && echo "  ✓ SECURITY.md" || echo "  ✗ SECURITY.md missing"
-    @test -f CONTRIBUTING.adoc && echo "  ✓ CONTRIBUTING.adoc" || echo "  ✗ CONTRIBUTING.adoc missing"
+    @test -f .github/CONTRIBUTING.md && echo "  ✓ .github/CONTRIBUTING.md" || echo "  ✗ .github/CONTRIBUTING.md missing"
     @test -f CODE_OF_CONDUCT.adoc && echo "  ✓ CODE_OF_CONDUCT.adoc" || echo "  ✗ CODE_OF_CONDUCT.adoc missing"
     @test -f MAINTAINERS.adoc && echo "  ✓ MAINTAINERS.adoc" || echo "  ✗ MAINTAINERS.adoc missing"
     @test -f CHANGELOG.adoc && echo "  ✓ CHANGELOG.adoc" || echo "  ✗ CHANGELOG.adoc missing"

@@ -461,7 +461,7 @@ This project requires contributors who understand:
 * The specific vehicle domains being addressed
 * Privacy-preserving system design
 
-See link:./CONTRIBUTING.adoc[CONTRIBUTING.adoc].
+See link:./.github/CONTRIBUTING.md[.github/CONTRIBUTING.md].
 
 == License
 
