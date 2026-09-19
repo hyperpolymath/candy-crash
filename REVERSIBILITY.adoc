@@ -345,4 +345,4 @@ rails db:migrate  # Must succeed
 
 == Questions?
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to ask questions or propose improvements to reversibility features.
+See link:.github/CONTRIBUTING.md[.github/CONTRIBUTING.md] for how to ask questions or propose improvements to reversibility features.
