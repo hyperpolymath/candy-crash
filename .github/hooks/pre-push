@@ -5,7 +5,7 @@
 # Thin wrapper that delegates to Just recipes
 #
 # Installation:
-#   ./.githooks/install.sh
+#   ./.github/hooks/install.sh
 
 set -e
 
