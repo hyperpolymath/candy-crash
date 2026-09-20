@@ -61,13 +61,6 @@ jobs:
         run: COVERAGE=true bundle exec rspec --format documentation
         env:
           COVERAGE: true
-      - name: Upload coverage
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v5.1.2
-        if: always()
-        with:
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
 
   lint:
     name: Code Quality
