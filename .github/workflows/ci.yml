@@ -36,16 +36,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6.0.2
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
+        uses: ruby/setup-ruby@v1.310.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
 
       - name: Set up Deno
-        uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+        uses: denoland/setup-deno@v2.0.2
         with:
           deno-version: v1.x
 
@@ -69,10 +69,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6.0.2
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
+        uses: ruby/setup-ruby@v1.310.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
@@ -96,16 +96,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6.0.2
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
+        uses: ruby/setup-ruby@v1.310.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
 
       - name: Set up Deno
-        uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+        uses: denoland/setup-deno@v2.0.2
         with:
           deno-version: v1.x
 
@@ -126,10 +126,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6.0.2
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v4.5.0
+        uses: actions/dependency-review-action@v5.0.0
 
   codeql:
     name: CodeQL Analysis
@@ -138,18 +138,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6.0.2
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@4bdb89f48054571735e3792627da6195c57459e2 # v3.31.9
+        uses: github/codeql-action/init@v3.31.10
         with:
           languages: ruby, javascript
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@4bdb89f48054571735e3792627da6195c57459e2 # v3.31.9
+        uses: github/codeql-action/autobuild@v3.31.10
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@4bdb89f48054571735e3792627da6195c57459e2 # v3.31.9
+        uses: github/codeql-action/analyze@v3.31.10
 
   rsr-validation:
     name: RSR Compliance Check
@@ -157,10 +157,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6.0.2
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.196.0
+        uses: ruby/setup-ruby@v1.310.0
         with:
           ruby-version: 3.3.6
           bundler-cache: true
@@ -240,7 +240,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@v6.0.2
 
       - name: Set up Podman
         run: |
