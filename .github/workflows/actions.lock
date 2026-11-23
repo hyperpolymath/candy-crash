@@ -22,7 +22,7 @@ workflows:
     '.github/workflows/gleam-ci.yml':
         - 'actions/cache@v5.0.5'
         - 'actions/checkout@v6.0.2'
-        - 'erlef/setup-beam@v1.18.2'
+        - 'erlef/setup-beam@v1.24.1'
     '.github/workflows/governance.yml': []
     '.github/workflows/hypatia-scan.yml': []
     '.github/workflows/jekyll-gh-pages.yml':
@@ -106,9 +106,9 @@ dependencies:
         commit: 'sha1-909cc5acb0fdd60627fb858598759246509fa755'
         owner_id: 42048915
         repo_id: 356423100
-    'erlef/setup-beam@v1.18.2':
-        ref: 'v1.18.2'
-        commit: 'sha1-5304e04ea2b355f03681464e683d92e3b2f18451'
+    'erlef/setup-beam@v1.24.1':
+        ref: 'v1.24.1'
+        commit: 'sha1-54075bcc5e249e4758d363f27d099f55d843f124'
         owner_id: 47606891
         repo_id: 331103973
     'github/codeql-action@main':
