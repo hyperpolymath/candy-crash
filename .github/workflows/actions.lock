@@ -14,7 +14,7 @@ workflows:
         - 'actions/checkout@v6.0.2'
         - 'actions/dependency-review-action@v5.0.0'
         - 'denoland/setup-deno@v2.0.2'
-        - 'github/codeql-action@v3.31.10'
+        - 'github/codeql-action@v4.39.3'
         - 'ruby/setup-ruby@v1.310.0'
     '.github/workflows/codeql.yml':
         - 'actions/checkout@v6.0.2'
@@ -116,9 +116,9 @@ dependencies:
         commit: 'sha1-662472033e021d55d94146f66f6058822b0b39fd'
         owner_id: 9919
         repo_id: 259445878
-    'github/codeql-action@v3.31.10':
-        ref: 'v3.31.10'
-        commit: 'sha1-4bdb89f48054571735e3792627da6195c57459e2'
+    'github/codeql-action@v4.39.3':
+        ref: 'v4.39.3'
+        commit: 'sha1-33d7b85da1a04171e211befe2c739303b9a4c066'
         owner_id: 9919
         repo_id: 259445878
     'haskell-actions/setup@v2.11.0':
