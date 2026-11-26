@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -42,7 +42,7 @@ jobs:
             ~/.cabal/packages
             ~/.cabal/store
             .casket-ssg/dist-newstyle
-          key: ${{ runner.os }}-casket-${{ hashFiles('.casket-ssg/casket-ssg.cabal') }}
+          key: ${{ runner.os }}-ubuntu-24.04-casket-${{ hashFiles('.casket-ssg/casket-ssg.cabal') }}
 
       - name: Build casket-ssg
         working-directory: .casket-ssg
@@ -91,7 +91,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - name: Deploy to GitHub Pages
