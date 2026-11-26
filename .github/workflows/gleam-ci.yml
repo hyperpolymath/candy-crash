@@ -21,7 +21,7 @@ permissions:
 jobs:
   build:
     name: Build & Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: backend
@@ -41,7 +41,7 @@ jobs:
           path: |
             backend/build
             ~/.cache/gleam
-          key: ${{ runner.os }}-gleam-${{ hashFiles('backend/gleam.toml') }}
+          key: ${{ runner.os }}-ubuntu-24.04-gleam-${{ hashFiles('backend/gleam.toml') }}
           restore-keys: |
             ${{ runner.os }}-gleam-
 
@@ -59,7 +59,7 @@ jobs:
 
   docker:
     name: Docker Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
