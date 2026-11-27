@@ -4,7 +4,7 @@
 version: 'v0.0.3'
 workflows:
     '.github/workflows/casket-pages.yml':
-        - 'actions/cache@v5.0.5'
+        - 'actions/cache@v6.1.0'
         - 'actions/checkout@v6.0.2'
         - 'actions/configure-pages@v6.0.0'
         - 'actions/deploy-pages@v5.0.1'
@@ -20,7 +20,7 @@ workflows:
         - 'actions/checkout@v6.0.2'
         - 'github/codeql-action@main'
     '.github/workflows/gleam-ci.yml':
-        - 'actions/cache@v5.0.5'
+        - 'actions/cache@v6.1.0'
         - 'actions/checkout@v6.0.2'
         - 'erlef/setup-beam@v1.24.1'
     '.github/workflows/governance.yml': []
@@ -49,9 +49,9 @@ workflows:
     '.github/workflows/workflow-linter.yml':
         - 'actions/checkout@v4.1.1'
 dependencies:
-    'actions/cache@v5.0.5':
-        ref: 'v5.0.5'
-        commit: 'sha1-27d5ce7f107fe9357f9df03efb73ab90386fccae'
+    'actions/cache@v6.1.0':
+        ref: 'v6.1.0'
+        commit: 'sha1-55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
         owner_id: 44036562
         repo_id: 215566462
     'actions/checkout@v4.1.1':
